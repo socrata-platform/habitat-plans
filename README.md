@@ -1,2 +1,4 @@
-# habitat-plans
+Habitat-Plans
+=============
+
 Socrata-maintained Habitat plans
