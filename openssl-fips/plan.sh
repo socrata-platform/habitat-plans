@@ -22,3 +22,10 @@ do_build() {
   ./config
   make
 }
+
+do_install() {
+  do_default_install
+  # Do this after the install to be on the safe side of satisfying "you cannot
+  # modify the contents of the official tarball".
+  sed -i 's,/bin/rm,rm,g' ${pkg_prefix}/bin/fipsld
+}
