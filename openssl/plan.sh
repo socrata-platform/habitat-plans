@@ -1,14 +1,12 @@
 pkg_name=openssl
 pkg_description="The OpenSSL cryptography and SSL/TLS toolkit in FIPS mode"
 pkg_origin=socrata
-pkg_version=$(wget -q -O - https://www.openssl.org/source/ | \
-              grep -E -o '>openssl-1\.0\.[0-9]+[a-z]\.tar\.gz<' | \
-              sed -E 's/^>openssl-(1\.0\.[0-9]+[a-z])\.tar\.gz<$/\1/')
+pkg_version=1.0.2m
 pkg_maintainer="Socrata Engineering <sysadmin@socrata.com>"
 pkg_license=('OpenSSL')
 pkg_upstream_url="https://www.openssl.org"
 pkg_source="https://www.openssl.org/source/${pkg_name}-${pkg_version}.tar.gz"
-pkg_shasum=$(wget -q -O - ${pkg_source}.sha256)
+pkg_shasum=8c6ff15ec6b319b50788f42c7abc2890c08ba5a1cdcd3810eb9092deada37b0f
 
 pkg_bin_dirs=(bin)
 pkg_lib_dirs=(lib)
