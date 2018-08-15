@@ -1,0 +1,21 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+  provision_command: mkdir -p /run/sshd
+
+provisioner:
+  name: habitat
+  install_latest_artifact: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: ubuntu-18.04
+
+suites:
+  - name: default
+    provisioner:
+      package_origin: socrata
+      package_name: carbon

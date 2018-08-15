@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+group :test do
+  gem 'kitchen-docker'
+  gem 'kitchen-habitat'
+  gem 'kitchen-inspec'
+  gem 'test-kitchen'
+end
