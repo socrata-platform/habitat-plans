@@ -13,8 +13,9 @@ pkg_build_deps=(
 pkg_bin_dirs=(bin)
 
 do_prepare() {
-  virtualenv ${pkg_prefix}
-  source ${pkg_prefix}/bin/activate
+  virtualenv "${pkg_prefix}"
+  # shellcheck source=/dev/null
+  source "${pkg_prefix}/bin/activate"
 }
 
 do_build() {
@@ -29,5 +30,5 @@ do_install() {
     --install-option="--prefix=${pkg_prefix}" \
     --install-option="--install-lib=${pkg_prefix}/lib" \
     carbon==${pkg_version}
-  rm -rf ${pkg_prefix}/conf
+  rm -rf "${pkg_prefix}/conf"
 }
