@@ -21,9 +21,9 @@ do_prepare() {
 
   # The tests need to be able to find rm in the coreutils package.
   build_line "Patching all references to '/bin/rm'"
-  for file in $(grep -R '/bin/rm' ${SRC_PATH}/test/* | cut -d ':' -f 1 | sort | uniq); do
+  for file in $(grep -R '/bin/rm' "${SRC_PATH}/test/*" | cut -d ':' -f 1 | sort | uniq); do
     debug "Patching file ${file}"
-    sed -i 's,/bin/rm,rm,g' $file
+    sed -i 's,/bin/rm,rm,g' "$file"
   done
 
   export BUILD_CC=gcc
@@ -42,8 +42,8 @@ do_build() {
     shared \
     disable-gost \
     fips \
-    $CFLAGS \
-    $LDFLAGS
+    "$CFLAGS" \
+    "$LDFLAGS"
 
   env CC= make depend
   make CC="$BUILD_CC"
@@ -56,26 +56,26 @@ do_check() {
 do_install() {
   # Some of the tests rely on using demoCA, so this can't happen earlier.
   build_line "Patching in pointers to the cacerts package"
-  sed -i "\,^certificate,s,\$dir/cacert\.pem,$(pkg_path_for cacerts)/ssl/certs/cacert.pem,g" \
-    ${SRC_PATH}/apps/openssl.cnf
-  sed -i "\,define X509_CERT_DIR,s,OPENSSLDIR \"/certs\",\"$(pkg_path_for cacerts)/ssl/certs\",g" \
-    ${SRC_PATH}/crypto/cryptlib.h
-  sed -i "\,define X509_CERT_FILE,s,OPENSSLDIR \"/cert\.pem\",\"$(pkg_path_for cacerts)/ssl/cert.pem\",g" \
-    ${SRC_PATH}/crypto/cryptlib.h
+  sed -i "\\,^certificate,s,\\$dir/cacert\\.pem,$(pkg_path_for cacerts)/ssl/certs/cacert.pem,g" \
+    "${SRC_PATH}/apps/openssl.cnf"
+  sed -i "\\,define X509_CERT_DIR,s,OPENSSLDIR \"/certs\",\"$(pkg_path_for cacerts)/ssl/certs\",g" \
+    "${SRC_PATH}/crypto/cryptlib.h"
+  sed -i "\\,define X509_CERT_FILE,s,OPENSSLDIR \"/cert\\.pem\",\"$(pkg_path_for cacerts)/ssl/cert.pem\",g" \
+    "${SRC_PATH}/crypto/cryptlib.h"
 
   build_line "Patching out references to './demoCA'"
-  sed -i "s,\./demoCA,${pkg_prefix}/ssl,g" ${SRC_PATH}/apps/CA.pl.in
-  sed -i "s,\./demoCA,${pkg_prefix}/ssl,g" ${SRC_PATH}/apps/openssl.cnf
-  sed -i "\,CATOP=\./demoCA,s,\./demoCA,${pkg_prefix}/ssl,g" ${SRC_PATH}/apps/CA.sh
+  sed -i "s,\\./demoCA,${pkg_prefix}/ssl,g" "${SRC_PATH}/apps/CA.pl.in"
+  sed -i "s,\\./demoCA,${pkg_prefix}/ssl,g" "${SRC_PATH}/apps/openssl.cnf"
+  sed -i "\\,CATOP=\\./demoCA,s,\\./demoCA,${pkg_prefix}/ssl,g" "${SRC_PATH}/apps/CA.sh"
 
   # Not all the tests pass in FIPS mode.
   build_line "Patching openssl.cnf to enable FIPS mode by default"
-  ptch="openssl_conf = openssl_conf_section\n\n"
-  ptch="${ptch}[ openssl_conf_section ]\n"
-  ptch="${ptch}alg_section = algs\n\n"
-  ptch="${ptch}[ algs ]\n"
-  ptch="${ptch}fips_mode = yes\n\n"
-  sed -i "\,^\[ new_oids \]$,s,^,${ptch}," ${SRC_PATH}/apps/openssl.cnf
+  ptch="openssl_conf = openssl_conf_section\\n\\n"
+  ptch="${ptch}[ openssl_conf_section ]\\n"
+  ptch="${ptch}alg_section = algs\\n\\n"
+  ptch="${ptch}[ algs ]\\n"
+  ptch="${ptch}fips_mode = yes\\n\\n"
+  sed -i "\\,^\\[ new_oids \\]$,s,^,${ptch}," "${SRC_PATH}/apps/openssl.cnf"
 
   do_default_install
 }
