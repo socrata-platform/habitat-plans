@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-pkg_origin = 'socrata'
+pkg_origin = ENV['HAB_ORIGIN']
 pkg_name = 'carbon'
 pkg_ver = command("ls /hab/pkgs/#{pkg_origin}/#{pkg_name}").stdout.split.last
 pkg_build = command("ls /hab/pkgs/#{pkg_origin}/#{pkg_name}/#{pkg_ver}")

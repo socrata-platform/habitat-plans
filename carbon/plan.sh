@@ -1,5 +1,5 @@
 pkg_name=carbon
-pkg_origin=socrata
+pkg_origin="socrata"
 pkg_version="0.9.12"
 pkg_description="Graphite Carbon"
 pkg_upstream_url="https://github.com/graphite-project/carbon"

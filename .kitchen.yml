@@ -1,0 +1,34 @@
+---
+# Use base64 encoding to transmit the Habitat public verification key as a
+# single line of text. The base64 command has different switches to control
+# line breaks in Linux vs BSD/MacOS, so use Ruby's standard lib here.
+driver:
+  name: docker
+  use_sudo: false
+  provision_command:
+    - mkdir -p /run/sshd
+    - apt-get update
+    - apt-get -y install curl
+    - "curl 'https://raw.githubusercontent.com/habitat-sh/habitat/master/components/hab/install.sh' | bash"
+    - "echo '<%= Base64.strict_encode64(%x{hab origin key export #{ENV['HAB_ORIGIN']}}) %>' | base64 --decode | hab origin key import"
+    - mkdir -p /home/kitchen/.hab/cache
+    - cp -a /hab/cache/keys /home/kitchen/.hab/cache/keys
+    - chown -R kitchen:kitchen /home/kitchen/.hab/cache/keys
+
+provisioner:
+  name: habitat
+  install_latest_artifact: true
+
+verifier:
+  name: inspec
+  inspec_tests:
+    - <%= ENV['HAB_PLAN'] %>/test/integration/default
+
+platforms:
+  - name: ubuntu
+
+suites:
+  - name: <%= ENV['HAB_ORIGIN'] || raise('Environment variable HAB_ORIGIN must be set') %>-<%= ENV['HAB_PLAN'] || raise('Environment variable HAB_PLAN must be set') %>
+    provisioner:
+      package_origin: <%= ENV['HAB_ORIGIN'] %>
+      package_name: <%= ENV['HAB_PLAN'] %>
