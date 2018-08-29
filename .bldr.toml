@@ -1,6 +1,9 @@
 [carbon]
 plan_path = "carbon"
 
+[carbon-cache]
+plan_path = "carbon-cache"
+
 [openssl]
 plan_path = "openssl"
 

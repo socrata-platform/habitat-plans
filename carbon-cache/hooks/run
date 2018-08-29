@@ -1,0 +1,11 @@
+#!/bin/sh
+
+ulimit -n {{cfg.system.file_limit}}
+
+exec 2>&1
+
+exec {{pkgPathFor "socrata/carbon"}}/bin/python \
+  {{pkgPathFor "socrata/carbon"}}/bin/carbon-cache.py \
+  --config={{pkg.svc_config_path}}/carbon.conf \
+  --debug \
+  start

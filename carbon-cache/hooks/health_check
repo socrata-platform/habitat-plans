@@ -1,0 +1,107 @@
+#!{{pkgPathFor "core/bash"}}/bin/bash
+
+PID_FILE="{{pkg.svc_var_path}}/carbon-cache-a.pid"
+EXIT_STATUS=0
+WARNING=()
+CRITICAL=()
+UNKNOWN=()
+
+critical () {
+  local msg="$1"
+  CRITICAL+=("CRITCAL: $msg")
+}
+
+warning () {
+  local msg="$1"
+  WARNING+=("Warning: $msg")
+}
+
+unknown () {
+  local msg="$1"
+  UNKNOWN+=("Unknown: $msg")
+}
+
+pid () {
+  cat $PID_FILE
+}
+
+check_port () {
+  local port="$1"
+  local proto="$2"
+  local local_addr="${3:-0.0.0.0}"
+  local local_addr="0.0.0.0"
+  local foreign_addr="0.0.0.0"
+
+  case $proto in
+    "tcp")
+      netstat -pant 2> /dev/null | \
+        grep -E "^tcp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+LISTEN\\W+$(pid)/python$" > /dev/null
+    ;;
+    "udp")
+      netstat -panu 2> /dev/null | \
+        grep -E "^udp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+$(pid)/python$" > /dev/null
+    ;;
+  esac
+
+  return $?
+}
+
+check_ports () {
+  if ! check_port {{cfg.cache.line_receiver_port}} tcp {{cfg.cache.line_receiver_interface}}; then
+    critical "PID $(pid) is not listening on TCP port ${port}"
+  fi
+  for port in {{cfg.cache.pickle_receiver_port}} {{cfg.cache.cache_query_port}}; do
+    if ! check_port $port tcp; then
+      critical "PID $(pid) is not listening on TCP port ${port}"
+    fi
+  done
+  if [ "{{cfg.cache.enable_udp_listener}}" = "True" ]; then
+    if ! check_port {{cfg.cache.udp_receiver_port}} udp; then
+      critical "PID $(pid) is not listening on UDP port {{cfg.cache.udp_receiver_port}}"
+    fi
+  fi
+}
+
+process_check_output () {
+  if [ ${#UNKNOWN[@]} -gt 0 ]; then
+    EXIT_STATUS=3
+    for unknown in "${UNKNOWN[@]}"; do
+      echo "$unknown"
+    done
+  fi
+
+  if [ ${#WARNING[@]} -gt 0 ]; then
+    EXIT_STATUS=1
+    for warn in "${WARNING[@]}"; do
+      echo "$warn"
+    done
+  fi
+
+  if [ ${#CRITICAL[@]} -gt 0 ]; then
+    EXIT_STATUS=2
+    for crit in "${CRITICAL[@]}"; do
+      echo "$crit"
+    done
+  fi
+
+  if [ $EXIT_STATUS = 0 ]; then
+    echo "OK: All health checks are passing"
+  fi
+}
+
+main () {
+  if [ ! -e "$PID_FILE" ]; then
+    echo "Unknown: PID file not found; is carbon-cache running?"
+    return 3
+  fi
+
+  check_ports
+
+  process_check_output
+
+  return $EXIT_STATUS
+}
+
+main
+
+exit $?

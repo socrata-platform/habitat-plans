@@ -1,0 +1,34 @@
+[system]
+file_limit = 1024
+
+[cache]
+enable_logrotation = "True"
+max_cache_size = "inf"
+max_updates_per_second = 100
+max_creates_per_minute = 200
+line_receiver_port = 2003
+udp_receiver_port = 2003
+pickle_receiver_port = 2004
+enable_udp_listener = "True"
+cache_query_port = 7002
+cache_write_strategy = "sorted"
+use_flow_control = "True"
+log_updates = "False"
+log_cache_hits = "False"
+whisper_autoflush = "False"
+
+[storage_schemas.500_carbon]
+pattern = "^carbon\\."
+retentions = "60s:90d"
+
+[storage_schemas.500_core_60s_6days_15min_year]
+pattern = "^core\\."
+retentions = "60s:1d,15m:7d,1h:365d"
+
+[storage_schemas.500_metrics_default]
+pattern = "^metrics\\."
+retentions = "60s:1d,15m:7d,1h:365d"
+
+[storage_schemas.999_default_1min_for_1day]
+pattern = ".*"
+retentions = "60s:1d,5m:14d,1h:365d"
