@@ -6,7 +6,6 @@ ulimit -n {{cfg.system.file_limit}}
 
 exec {{pkg.path}}/bin/uwsgi \
   --processes {{cfg.system.workers}} \
-  --plugins carbon \
   {{#with bind.carbon_cache.first as |carbon| ~}}
   --carbon {{carbon.sys.ip}}::{{carbon.line_port}} \
   {{/with ~}}
