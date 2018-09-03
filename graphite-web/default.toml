@@ -1,0 +1,22 @@
+[system]
+file_limit = 1024
+workers = 8
+
+[web]
+secret_key = "UNSAFE_DEFAULT"
+time_zone = "UTC"
+
+[databases.default]
+name = "/hab/svc/graphite-web/data/graphite.db"
+engine = "django.db.backends.sqlite3"
+
+[graph_templates.default]
+background = "black"
+foreground = "white"
+majorLine = "white"
+minorLine = "grey"
+lineColors = "blue,green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose"
+fontName = "Sans"
+fontSize = 10
+fontBold = "False"
+fontItalic = "False"

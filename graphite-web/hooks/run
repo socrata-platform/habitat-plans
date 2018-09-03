@@ -1,0 +1,44 @@
+#!/bin/sh
+
+exec 2>&1
+
+ulimit -n {{cfg.system.file_limit}}
+
+exec {{pkg.path}}/bin/uwsgi \
+  --processes {{cfg.system.workers}} \
+  {{#if bind.carbon_cache ~}}
+  --plugins carbon \
+  {{#with bind.carbon-cache.first as |carbon| ~}}
+  --carbon {{carbon.sys.ip}}::carbon.carbon_cache_line_port \
+  {{/with ~}}
+  {{/if ~}}
+  --pythonpath {{pkg.path}}/lib \
+  --pythonpath {{pkg.path}}/webapp/graphite
+
+# <% if node['graphite']['uwsgi']['listen_http'] -%>
+# --http :<%= node['graphite']['uwsgi']['port'] %> \
+# <% end -%>
+# --pythonpath <%= node['graphite']['base_dir'] %>/lib \
+# --pythonpath <%= node['graphite']['base_dir'] %>/webapp/graphite \
+# --wsgi-file <%= node['graphite']['base_dir'] %>/conf/graphite.wsgi.example \
+# --uid <%= node['graphite']['user'] %> --gid <%= node['graphite']['group'] %> \
+# --chmod-socket=<%= node['graphite']['uwsgi']['socket_permissions'] %> \
+# --no-orphans --master \
+# --procname graphite-web \
+# --die-on-term \
+# --socket <%= node['graphite']['uwsgi']['socket'] %>
+#
+#
+#
+#
+# exec uwsgi --processes 8 \
+# --plugins carbon --carbon 127.0.0.1:2003 \
+# --pythonpath /opt/graphite/lib \
+# --pythonpath /opt/graphite/webapp/graphite \
+# --wsgi-file /opt/graphite/conf/graphite.wsgi.example \
+# --uid graphite --gid graphite \
+# --chmod-socket=755 \
+# --no-orphans --master \
+# --procname graphite-web \
+# --die-on-term \
+# --socket /tmp/uwsgi.sock

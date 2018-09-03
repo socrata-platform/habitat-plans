@@ -4,6 +4,9 @@ plan_path = "carbon"
 [carbon-cache]
 plan_path = "carbon-cache"
 
+[graphite-web]
+plan_path = "graphite-web"
+
 [openssl]
 plan_path = "openssl"
 
