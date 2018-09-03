@@ -3,6 +3,7 @@
 pkg_origin = ENV['HAB_ORIGIN']
 pkg_path = command("hab pkg path #{pkg_origin}/carbon-cache").stdout
 svc_pid = file('/hab/svc/graphite-web/PID').content
+ip_addr = file('/etc/hosts').content.lines.last.split.first
 
 describe command('hab sup status') do
   its(:exit_status) { should eq(0) }
@@ -46,7 +47,7 @@ describe file('/hab/svc/graphite-web/hooks/run') do
       exec #{pkg_path}/bin/uwsgi \
         --processes 8 \
         --plugins carbon \
-        --carbon 127.0.0.1::2003 \
+        --carbon #{ip_addr}:2003 \
         --pythonpath #{pkg_path}/lib \
         --pythonpath #{pkg_path}/webapp/graphite \
         --wsgi-file /hab/svc/graphite-web/conf/graphite.wsgi \

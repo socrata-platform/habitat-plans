@@ -14,7 +14,7 @@ DATABASES = {
 {{#each cfg.databases ~}}
   '@key': {
     {{#each this ~}}
-    '{{toUpperCase @key}}': '{{this}}',
+    '{{toUppercase @key}}': '{{this}}',
     {{/each ~}}
   },
 {{/each ~}}
