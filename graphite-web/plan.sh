@@ -45,6 +45,7 @@ do_install() {
   pip install django-tagging==0.3.6
   pip install pytz pyparsing python-memcached uwsgi
   pip install graphite-web=="$pkg_version"
+  rm -rf "${pkg_prefix}/conf"
 }
 
 do_after() {
