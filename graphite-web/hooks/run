@@ -6,39 +6,19 @@ ulimit -n {{cfg.system.file_limit}}
 
 exec {{pkg.path}}/bin/uwsgi \
   --processes {{cfg.system.workers}} \
-  {{#if bind.carbon_cache ~}}
   --plugins carbon \
-  {{#with bind.carbon-cache.first as |carbon| ~}}
-  --carbon {{carbon.sys.ip}}::carbon.carbon_cache_line_port \
+  {{#with bind.carbon_cache.first as |carbon| ~}}
+  --carbon {{carbon.sys.ip}}::{{carbon.line_port}} \
   {{/with ~}}
-  {{/if ~}}
   --pythonpath {{pkg.path}}/lib \
-  --pythonpath {{pkg.path}}/webapp/graphite
-
-# <% if node['graphite']['uwsgi']['listen_http'] -%>
-# --http :<%= node['graphite']['uwsgi']['port'] %> \
-# <% end -%>
-# --pythonpath <%= node['graphite']['base_dir'] %>/lib \
-# --pythonpath <%= node['graphite']['base_dir'] %>/webapp/graphite \
-# --wsgi-file <%= node['graphite']['base_dir'] %>/conf/graphite.wsgi.example \
-# --uid <%= node['graphite']['user'] %> --gid <%= node['graphite']['group'] %> \
-# --chmod-socket=<%= node['graphite']['uwsgi']['socket_permissions'] %> \
-# --no-orphans --master \
-# --procname graphite-web \
-# --die-on-term \
-# --socket <%= node['graphite']['uwsgi']['socket'] %>
-#
-#
-#
-#
-# exec uwsgi --processes 8 \
-# --plugins carbon --carbon 127.0.0.1:2003 \
-# --pythonpath /opt/graphite/lib \
-# --pythonpath /opt/graphite/webapp/graphite \
-# --wsgi-file /opt/graphite/conf/graphite.wsgi.example \
-# --uid graphite --gid graphite \
-# --chmod-socket=755 \
-# --no-orphans --master \
-# --procname graphite-web \
-# --die-on-term \
-# --socket /tmp/uwsgi.sock
+  --pythonpath {{pkg.path}}/webapp/graphite \
+  --wsgi-file {{pkg.svc_config_path}}/graphite.wsgi \
+  --no-orphans \
+  --master \
+  --procname graphite-web \
+  --die-on-term \
+  --socket {{pkg.svc_var_path}}/uwsgi.sock
+  # TODO: Do we need these from the original runit service?
+  # --uid {{pkg.svc_user}} \
+  # --gid {{pkg.svc_group}} \
+  # --chmod-socket 755 \
