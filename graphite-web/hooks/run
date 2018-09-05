@@ -22,3 +22,5 @@ exec {{pkg.path}}/bin/uwsgi \
   # --uid {{pkg.svc_user}} \
   # --gid {{pkg.svc_group}} \
   # --chmod-socket 755 \
+
+sleep 2

@@ -1,68 +1,57 @@
 #!{{pkgPathFor "core/bash"}}/bin/bash
 
-PID_FILE="{{pkg.svc_var_path}}/graphite-web.pid"
+PID_FILE="{{pkg.svc_path}}/PID"
 EXIT_STATUS=0
 WARNING=()
 CRITICAL=()
 UNKNOWN=()
 
-critical () {
+critical() {
   local msg="$1"
   CRITICAL+=("CRITCAL: $msg")
 }
 
-warning () {
+warning() {
   local msg="$1"
   WARNING+=("Warning: $msg")
 }
 
-unknown () {
+unknown() {
   local msg="$1"
   UNKNOWN+=("Unknown: $msg")
 }
 
-pid () {
+pid() {
   cat $PID_FILE
 }
 
-check_port () {
+check_port() {
   local port="$1"
-  local proto="$2"
-  local local_addr="${3:-0.0.0.0}"
+  local local_addr="0.0.0.0"
   local local_addr="0.0.0.0"
   local foreign_addr="0.0.0.0"
 
-  case $proto in
-    "tcp")
-      netstat -pant 2> /dev/null | \
-        grep -E "^tcp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+LISTEN\\W+$(pid)/python$" > /dev/null
-    ;;
-    "udp")
-      netstat -panu 2> /dev/null | \
-        grep -E "^udp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+$(pid)/python$" > /dev/null
-    ;;
-  esac
+  netstat -pant 2> /dev/null | \
+    grep -E "^tcp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+LISTEN\\W+$(pid)/graphite-web$" > /dev/null
 
   return $?
 }
 
-check_ports () {
-  if ! check_port {{cfg.cache.line_receiver_port}} tcp {{cfg.cache.line_receiver_interface}}; then
-    critical "PID $(pid) is not listening on TCP port ${port}"
-  fi
-  for port in {{cfg.cache.pickle_receiver_port}} {{cfg.cache.cache_query_port}}; do
-    if ! check_port $port tcp; then
-      critical "PID $(pid) is not listening on TCP port ${port}"
-    fi
-  done
-  if [ "{{cfg.cache.enable_udp_listener}}" = "True" ]; then
-    if ! check_port {{cfg.cache.udp_receiver_port}} udp; then
-      critical "PID $(pid) is not listening on UDP port {{cfg.cache.udp_receiver_port}}"
-    fi
+check_ports() {
+  if ! check_port {{cfg.system.port}}; then
+    critical "PID $(pid) is not listening on TCP port {{cfg.system.port}}"
   fi
 }
 
-process_check_output () {
+check_worker_processes() {
+  local expected=$(({{cfg.system.workers}} + 1))
+  local found=$(pgrep graphite-web | wc -l)
+  if [ $found != $expected ]; then
+    critical "Found ${found} graphite-web processes instead of the expected ${expected}"
+  fi
+}
+
+process_check_output() {
   if [ ${#UNKNOWN[@]} -gt 0 ]; then
     EXIT_STATUS=3
     for unknown in "${UNKNOWN[@]}"; do
@@ -89,13 +78,14 @@ process_check_output () {
   fi
 }
 
-main () {
+main() {
   if [ ! -e "$PID_FILE" ]; then
     echo "Unknown: PID file not found; is graphite-web running?"
     return 3
   fi
 
   check_ports
+  check_worker_processes
 
   process_check_output
 

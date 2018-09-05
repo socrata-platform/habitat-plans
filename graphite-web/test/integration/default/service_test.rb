@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 pkg_origin = ENV['HAB_ORIGIN']
-pkg_path = command("hab pkg path #{pkg_origin}/carbon-cache").stdout
+pkg_path = command("hab pkg path #{pkg_origin}/graphite-web").stdout
 svc_pid = file('/hab/svc/graphite-web/PID').content
 ip_addr = file('/etc/hosts').content.lines.last.split.first
 
@@ -19,15 +19,16 @@ describe command("hab svc status #{pkg_origin}/graphite-web") do
   its(:exit_status) { should eq(0) }
 end
 
-describe processes("#{pkg_path}/bin/uwsgi
-
+describe processes('{uwsgi} graphite-web') do
   it { should exist }
-  its(:'entries.length') { should eq(1)
+  its(:'entries.length') { should eq(9)
 end
 
-describe file("/proc/#{pid}/limits") do
-  its(:content) do
-    should match(/^Max open files\W+1024\W+1024\W+files\W+$/)
+processes('{uwsgi} graphite-web').pids.each do |p|
+  describe file("/proc/#{p}/limits") do
+    its(:content) do
+      should match(/^Max open files\W+1024\W+1024\W+files\W+$/)
+    end
   end
 end
 
@@ -61,17 +62,18 @@ describe file('/hab/svc/graphite-web/hooks/run') do
   end
 end
 
-describe file('/hab/svc/graphite-web/var/uwsgi.sock') do
-  it { should exist }
-  it { should be_socket }
-  its(:owner) { should eq('root') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should cmp('0755') }
+describe port(8000) do
+  it { should be_listening }
+  its(:protocols) { should eq(%w[tcp]) }
+  its(:addresses) { should eq('0.0.0.0') }
+  its(:processes) { should eq('graphite-web') }
 end
 
-describe file('/hab/svc/graphite-web/var/info.log') do
-  it { should exist }
-  its(:owner) { should eq('hab') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should eq('0644') }
+%w[info.log exception.log].each do |f|
+  describe file(File.join('/hab/svc/graphite-web/var', f)) do
+    it { should exist }
+    its(:owner) { should eq('hab') }
+    its(:group) { should eq('hab') }
+    its(:mode) { should eq('0644') }
+  end
 end
