@@ -1,5 +1,5 @@
 import os, sys
-sys.path.append('{{pkg.path}}')
+sys.path.append('{{pkg.path}}/webapp')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'graphite.settings'
 
 import django.core.handlers.wsgi

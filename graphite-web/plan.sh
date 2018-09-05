@@ -19,6 +19,12 @@ pkg_bin_dirs=(bin)
 pkg_binds=(
   [carbon_cache]="line_port"
 )
+pkg_exports=(
+  [port]=system.port
+)
+pkg_exposes=(
+  port
+)
 
 # The graphite-web version matches up to the Carbon version.
 pkg_version() {

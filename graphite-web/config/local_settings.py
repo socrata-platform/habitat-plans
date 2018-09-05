@@ -4,7 +4,7 @@ STORAGE_DIR = '{{pkg.svc_data_path}}'
 WHISPER_DIR = '{{bind.carbon_cache.members.first.svc_data_path}}/whisper'
 RRD_DIR = '{{bind.carbon_cache.members.first.svc_data_path}}/rrd'
 CERES_DIR = '{{bind.carbon_cache.members.first.svc_data_path}}/ceres'
-LOG_DIR = '{{pkg.svc_path}}/logs'
+LOG_DIR = '{{pkg.svc_var_path}}'
 INDEX_FILE = '{{pkg.svc_data_path}}/index'
 {{#each cfg.web ~}}
 {{toUppercase @key}} = '{{this}}'
@@ -12,7 +12,7 @@ INDEX_FILE = '{{pkg.svc_data_path}}/index'
 
 DATABASES = {
 {{#each cfg.databases ~}}
-  '@key': {
+  '{{@key}}': {
     {{#each this ~}}
     '{{toUppercase @key}}': '{{this}}',
     {{/each ~}}

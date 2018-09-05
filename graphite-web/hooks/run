@@ -16,7 +16,7 @@ exec {{pkg.path}}/bin/uwsgi \
   --master \
   --procname graphite-web \
   --die-on-term \
-  --socket {{pkg.svc_var_path}}/uwsgi.sock
+  --socket :{{cfg.system.port}}
   # TODO: Do we need these from the original runit service?
   # --uid {{pkg.svc_user}} \
   # --gid {{pkg.svc_group}} \

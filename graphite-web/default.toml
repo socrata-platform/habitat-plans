@@ -1,6 +1,7 @@
 [system]
 file_limit = 1024
 workers = 8
+port = 8000
 
 [web]
 secret_key = "UNSAFE_DEFAULT"

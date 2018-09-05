@@ -1,6 +1,6 @@
 #!{{pkgPathFor "core/bash"}}/bin/bash
 
-PID_FILE="{{pkg.svc_var_path}}/carbon-cache.pid"
+PID_FILE="{{pkg.svc_var_path}}/graphite-web.pid"
 EXIT_STATUS=0
 WARNING=()
 CRITICAL=()
@@ -86,12 +86,12 @@ process_check_output () {
 
   if [ $EXIT_STATUS = 0 ]; then
     echo "OK: All health checks are passing"
-  fi:
+  fi
 }
 
 main () {
   if [ ! -e "$PID_FILE" ]; then
-    echo "Unknown: PID file not found; is carbon-cache running?"
+    echo "Unknown: PID file not found; is graphite-web running?"
     return 3
   fi
 

@@ -68,3 +68,10 @@ describe file('/hab/svc/graphite-web/var/uwsgi.sock') do
   its(:group) { should eq('hab') }
   its(:mode) { should cmp('0755') }
 end
+
+describe file('/hab/svc/graphite-web/var/info.log') do
+  it { should exist }
+  its(:owner) { should eq('hab') }
+  its(:group) { should eq('hab') }
+  its(:mode) { should eq('0644') }
+end
