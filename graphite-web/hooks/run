@@ -9,6 +9,7 @@ exec {{pkg.path}}/bin/uwsgi \
   {{#with bind.carbon_cache.first as |carbon| ~}}
   --carbon {{carbon.sys.ip}}:{{carbon.cfg.line_port}} \
   {{/with ~}}
+  --pythonpath {{pkg.svc_config_path}} \
   --pythonpath {{pkg.path}}/lib \
   --pythonpath {{pkg.path}}/webapp/graphite \
   --wsgi-file {{pkg.svc_config_path}}/graphite.wsgi \

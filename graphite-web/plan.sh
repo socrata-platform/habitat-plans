@@ -54,6 +54,8 @@ do_install() {
     --install-option="--prefix=${pkg_prefix}" \
     --install-option="--install-lib=${pkg_prefix}/webapp" \
     graphite-web=="${pkg_version}"
+
+  sed -i 's/graphite\.local_settings/local_settings/g' "${pkg_prefix}/webapp/graphite/settings.py"
   rm -rf "${pkg_prefix}/conf"
 }
 
