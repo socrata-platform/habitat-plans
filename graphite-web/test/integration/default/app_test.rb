@@ -12,7 +12,7 @@ describe pip('graphite-web', pip_path) do
   it { should_not be_installed }
 end
 
-describe command("PYTHONPATH=#{pkg_path}/lib #{pip_path} show graphite-web") do
+describe command("PYTHONPATH=#{pkg_path}/webapp #{pip_path} show graphite-web") do
   its(:exit_status) { should eq(0) }
   its(:stdout) { should match(/^Version: 0\.9\.12$/) }
   its(:stdout) { should match(%r{^Location: #{pkg_path}/lib$}) }
@@ -43,7 +43,11 @@ end
   end
 end
 
-describe command("#{pkg_path}/bin/carbon-client.py --help") do
-  its(:exit_status) { should eq(0) }
-  its(:stdout) { should match(/^Usage: carbon-client\.py/) }
+%w[content graphite].each do |d|
+  describe directory(File.join(pkg_path, d)) do
+    it { should exist }
+    its(:owner) { should eq('root') }
+    its(:group) { should eq('root') }
+    its(:mode) { should cmp('0755') }
+  end
 end

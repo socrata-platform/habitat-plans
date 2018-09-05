@@ -22,7 +22,7 @@ pkg_binds=(
 
 # The graphite-web version matches up to the Carbon version.
 pkg_version() {
-  < "$(pkg_path_for socrata/carbon)/IDENT" cut -d '/' -f 3
+  < "$(pkg_path_for "${pkg_origin}/carbon")/IDENT" cut -d '/' -f 3
 }
 
 do_before() {
@@ -44,7 +44,10 @@ do_install() {
   pip install django==1.5.5
   pip install django-tagging==0.3.6
   pip install pytz pyparsing python-memcached uwsgi
-  pip install graphite-web=="$pkg_version"
+  PYTHONPATH="${pkg_prefix}/webapp" pip install --no-binary=:all: \
+    --install-option="--prefix=${pkg_prefix}" \
+    --install-option="--install-lib=${pkg_prefix}/webapp" \
+    graphite-web=="${pkg_version}"
   rm -rf "${pkg_prefix}/conf"
 }
 
