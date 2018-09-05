@@ -49,7 +49,7 @@ do_build() {
 do_install() {
   pip install django==1.5.5
   pip install django-tagging==0.3.6
-  pip install pytz pyparsing python-memcached uwsgi
+  pip install pytz pyparsing python-memcached uwsgi whisper
   PYTHONPATH="${pkg_prefix}/webapp" pip install --no-binary=:all: \
     --install-option="--prefix=${pkg_prefix}" \
     --install-option="--install-lib=${pkg_prefix}/webapp" \
