@@ -2,7 +2,7 @@
 
 pkg_origin = ENV['HAB_ORIGIN']
 pkg_path = command("hab pkg path #{pkg_origin}/carbon-cache").stdout
-carbon_pkg_path = command('hab pkg path socrata/carbon').stdout
+carbon_pkg_path = command("hab pkg path #{pkg_origin}/carbon").stdout
 svc_pid = file('/hab/svc/carbon-cache/PID').content
 
 describe command('hab sup status') do
@@ -92,7 +92,7 @@ describe file('/hab/svc/carbon-cache/var/carbon-cache-a.pid') do
   its(:content) { should eq(pid) }
 end
 
-describe file('/hab/svc/carbon-cache/logs/carbon-cache.log') do
+describe file('/hab/svc/carbon-cache/var/carbon-cache.log') do
   it { should exist }
   its(:owner) { should eq('hab') }
   its(:group) { should eq('hab') }

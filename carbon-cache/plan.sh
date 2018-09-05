@@ -1,5 +1,5 @@
 pkg_name=carbon-cache
-pkg_origin="${HAB_ORIGIN:-python2}"
+pkg_origin="${HAB_ORIGIN:-socrata}"
 pkg_description="Graphite carbon-cache"
 pkg_upstream_url="https://github.com/graphite-project/carbon"
 pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.com>"
@@ -21,7 +21,7 @@ pkg_exposes=(
 
 # The package version is whatever version of Carbon we're building on top of.
 pkg_version() {
-  < "$(pkg_path_for socrata/carbon)/IDENT" cut -d '/' -f 3
+  < "$(pkg_path_for "${pkg_origin}/carbon")/IDENT" cut -d '/' -f 3
 }
 
 do_before() {
