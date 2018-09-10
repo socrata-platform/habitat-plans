@@ -12,6 +12,7 @@ pkg_exports=(
   [line_port]=cache.line_receiver_port
   [pickle_port]=cache.pickle_receiver_port
   [query_port]=cache.cache_query_port
+  [storage_dir]=cache.storage_dir
 )
 pkg_exposes=(
   line_port

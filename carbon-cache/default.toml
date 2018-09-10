@@ -2,6 +2,7 @@
 file_limit = 1024
 
 [cache]
+storage_dir = "/hab/svc/carbon-cache/data"
 enable_logrotation = "True"
 max_cache_size = "inf"
 max_updates_per_second = 100
