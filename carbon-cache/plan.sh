@@ -6,7 +6,7 @@ pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.c
 pkg_license=("Apache-2.0")
 pkg_deps=(
   core/bash
-  "${pkg_origin}/carbon"
+  socrata/carbon
 )
 pkg_exports=(
   [line_port]=cache.line_receiver_port

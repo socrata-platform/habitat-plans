@@ -19,6 +19,11 @@ describe command("hab svc status #{pkg_origin}/carbon-cache") do
   its(:exit_status) { should eq(0) }
 end
 
+describe command('/hab/svc/carbon-cache/hooks/health_check') do
+  its(:exit_status) { should eq(0) }
+  its(:stdout) { should eq('OK: All health checks are passing') }
+end
+
 describe port(2003) do
   it { should be_listening }
   its(:protocols) { should eq(%w[udp tcp]) }
