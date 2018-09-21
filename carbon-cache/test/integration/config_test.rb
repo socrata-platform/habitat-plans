@@ -3,10 +3,6 @@
 conf = '/hab/svc/carbon-cache/config'
 
 describe file(File.join(conf, 'carbon.conf')) do
-  it { should exist }
-  its(:owner) { should eq('root') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should cmp('0644') }
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [cache]
@@ -32,10 +28,6 @@ describe file(File.join(conf, 'carbon.conf')) do
 end
 
 describe file(File.join(conf, 'storage-schemas.conf')) do
-  it { should exist }
-  its(:owner) { should eq('root') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should cmp('0644') }
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [500_carbon]

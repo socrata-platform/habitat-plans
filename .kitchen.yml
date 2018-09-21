@@ -14,7 +14,7 @@ provisioner:
 verifier:
   name: inspec
   inspec_tests:
-    - <%= ENV['HAB_PLAN'] %>/test/integration/default
+    - <%= ENV['HAB_PLAN'] %>/test/integration
 
 platforms:
   - name: ubuntu

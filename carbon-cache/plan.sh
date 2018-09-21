@@ -7,6 +7,7 @@ pkg_license=("Apache-2.0")
 pkg_deps=(
   core/bash
   socrata/carbon
+  socrata/inspec
 )
 pkg_exports=(
   [line_port]=cache.line_receiver_port
@@ -35,5 +36,5 @@ do_build() {
 }
 
 do_install() {
-  return 0
+  cp -rp health "${pkg_prefix}/"
 }

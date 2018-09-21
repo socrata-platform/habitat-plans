@@ -1,107 +1,28 @@
-#!{{pkgPathFor "core/bash"}}/bin/bash
+#!/bin/sh
 
-PID_FILE="{{pkg.svc_var_path}}/carbon-cache-a.pid"
-EXIT_STATUS=0
-WARNING=()
-CRITICAL=()
-UNKNOWN=()
+export pkg_origin="{{pkg.origin}}"
+export pkg_name="{{pkg.name}}"
+export pkg_path="{{pkg.path}}"
+export pkg_svc_path="{{pkg.svc_path}}"
+export pkg_svc_config_path="{{pkg.svc_config_path}}"
+export pkg_svc_var_path="{{pkg.svc_var_path}}"
+export pkg_svc_data_path="{{pkg.svc_data_path}}"
+export pkg_svc_user="{{pkg.svc_user}}"
+export pkg_svc_group="{{pkg.svc_group}}"
+export cfg_system_file_limit="{{cfg.system.file_limit}}"
+export cfg_cache_storage_dir="{{cfg.cache.storage_dir}}"
+export cfg_cache_line_receiver_port="{{cfg.cache.line_receiver_port}}"
+export cfg_cache_enable_udp_listener="{{cfg.cache.enable_udp_listener}}"
+export cfg_cache_udp_receiver_port="{{cfg.cache.udp_receiver_port}}"
+export cfg_cache_pickle_receiver_port="{{cfg.cache.pickle_receiver_port}}"
+export cfg_cache_cache_query_port="{{cfg.cache.cache_query_port}}"
 
-critical () {
-  local msg="$1"
-  CRITICAL+=("CRITCAL: $msg")
-}
+{{pkgPathFor "socrata/inspec"}}/bin/inspec exec {{pkg.path}}/health \
+  --vendor-cache={{pkg.svc_var_path}}/inspec/cache \
+  --no-create-lockfile
 
-warning () {
-  local msg="$1"
-  WARNING+=("Warning: $msg")
-}
-
-unknown () {
-  local msg="$1"
-  UNKNOWN+=("Unknown: $msg")
-}
-
-pid () {
-  cat $PID_FILE
-}
-
-check_port () {
-  local port="$1"
-  local proto="$2"
-  local local_addr="${3:-0.0.0.0}"
-  local local_addr="0.0.0.0"
-  local foreign_addr="0.0.0.0"
-
-  case $proto in
-    "tcp")
-      netstat -pant 2> /dev/null | \
-        grep -E "^tcp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+LISTEN\\W+$(pid)/python$" > /dev/null
-    ;;
-    "udp")
-      netstat -panu 2> /dev/null | \
-        grep -E "^udp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+$(pid)/python$" > /dev/null
-    ;;
-  esac
-
-  return $?
-}
-
-check_ports () {
-  if ! check_port {{cfg.cache.line_receiver_port}} tcp {{cfg.cache.line_receiver_interface}}; then
-    critical "PID $(pid) is not listening on TCP port ${port}"
-  fi
-  for port in {{cfg.cache.pickle_receiver_port}} {{cfg.cache.cache_query_port}}; do
-    if ! check_port $port tcp; then
-      critical "PID $(pid) is not listening on TCP port ${port}"
-    fi
-  done
-  if [ "{{cfg.cache.enable_udp_listener}}" = "True" ]; then
-    if ! check_port {{cfg.cache.udp_receiver_port}} udp; then
-      critical "PID $(pid) is not listening on UDP port {{cfg.cache.udp_receiver_port}}"
-    fi
-  fi
-}
-
-process_check_output () {
-  if [ ${#UNKNOWN[@]} -gt 0 ]; then
-    EXIT_STATUS=3
-    for unknown in "${UNKNOWN[@]}"; do
-      echo "$unknown"
-    done
-  fi
-
-  if [ ${#WARNING[@]} -gt 0 ]; then
-    EXIT_STATUS=1
-    for warn in "${WARNING[@]}"; do
-      echo "$warn"
-    done
-  fi
-
-  if [ ${#CRITICAL[@]} -gt 0 ]; then
-    EXIT_STATUS=2
-    for crit in "${CRITICAL[@]}"; do
-      echo "$crit"
-    done
-  fi
-
-  if [ $EXIT_STATUS = 0 ]; then
-    echo "OK: All health checks are passing"
-  fi
-}
-
-main () {
-  if [ ! -e "$PID_FILE" ]; then
-    echo "Unknown: PID file not found; is carbon-cache running?"
-    return 3
-  fi
-
-  check_ports
-
-  process_check_output
-
-  return $EXIT_STATUS
-}
-
-main
-
-exit $?
+if [ $? != 0 ];
+  exit 2
+else
+  exit 0
+fi
