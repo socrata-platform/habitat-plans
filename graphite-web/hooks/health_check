@@ -1,97 +1,20 @@
-#!{{pkgPathFor "core/bash"}}/bin/bash
+#!/bin/sh
 
-PID_FILE="{{pkg.svc_path}}/PID"
-EXIT_STATUS=0
-WARNING=()
-CRITICAL=()
-UNKNOWN=()
+export pkg_origin="{{pkg.origin}}"
+export pkg_name="{{pkg.name}}"
+export pkg_path="{{pkg.path}}"
+export pkg_svc_config_path="{{pkg.svc_config_path}}"
+export pkg_svc_var_path="{{pkg.svc_var_path}}"
+export cfg_system_file_limit="{{cfg.system.file_limit}}"
+export cfg_system_workers="{{cfg.system.workers}}"
+export cfg_system_port="{{cfg.system.port}}"
 
-critical() {
-  local msg="$1"
-  CRITICAL+=("CRITCAL: $msg")
-}
+{{pkgPathFor "socrata/inspec"}}/bin/inspec exec {{pkg.path}}/health \
+  --vendor-cache={{pkg.svc_var_path}}/inspec/cache \
+  --no-create-lockfile
 
-warning() {
-  local msg="$1"
-  WARNING+=("Warning: $msg")
-}
-
-unknown() {
-  local msg="$1"
-  UNKNOWN+=("Unknown: $msg")
-}
-
-pid() {
-  cat $PID_FILE
-}
-
-check_port() {
-  local port="$1"
-  local local_addr="0.0.0.0"
-  local local_addr="0.0.0.0"
-  local foreign_addr="0.0.0.0"
-
-  netstat -pant 2> /dev/null | \
-    grep -E "^tcp\\W+[0-9]+\\W+[0-9]+\\W+${local_addr}:${port}\\W+${foreign_addr}:\\*\\W+LISTEN\\W+$(pid)/graphite-web$" > /dev/null
-
-  return $?
-}
-
-check_ports() {
-  if ! check_port {{cfg.system.port}}; then
-    critical "PID $(pid) is not listening on TCP port {{cfg.system.port}}"
-  fi
-}
-
-check_worker_processes() {
-  local expected=$(({{cfg.system.workers}} + 1))
-  local found=$(pgrep graphite-web | wc -l)
-  if [ $found != $expected ]; then
-    critical "Found ${found} graphite-web processes instead of the expected ${expected}"
-  fi
-}
-
-process_check_output() {
-  if [ ${#UNKNOWN[@]} -gt 0 ]; then
-    EXIT_STATUS=3
-    for unknown in "${UNKNOWN[@]}"; do
-      echo "$unknown"
-    done
-  fi
-
-  if [ ${#WARNING[@]} -gt 0 ]; then
-    EXIT_STATUS=1
-    for warn in "${WARNING[@]}"; do
-      echo "$warn"
-    done
-  fi
-
-  if [ ${#CRITICAL[@]} -gt 0 ]; then
-    EXIT_STATUS=2
-    for crit in "${CRITICAL[@]}"; do
-      echo "$crit"
-    done
-  fi
-
-  if [ $EXIT_STATUS = 0 ]; then
-    echo "OK: All health checks are passing"
-  fi
-}
-
-main() {
-  if [ ! -e "$PID_FILE" ]; then
-    echo "Unknown: PID file not found; is graphite-web running?"
-    return 3
-  fi
-
-  check_ports
-  check_worker_processes
-
-  process_check_output
-
-  return $EXIT_STATUS
-}
-
-main
-
-exit $?
+if [ $? != 0 ];
+  exit 2
+else
+  exit 0
+fi

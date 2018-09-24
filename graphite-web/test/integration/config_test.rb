@@ -3,10 +3,6 @@
 conf = '/hab/svc/graphite-web/config'
 
 describe file(File.join(conf, 'local_settings.py')) do
-  it { should exist }
-  its(:owner) { should eq('root') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should cmp('0644') }
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       SECRET_KEY = 'TODO_how_much_do_we_need_this'
@@ -25,10 +21,6 @@ describe file(File.join(conf, 'local_settings.py')) do
 end
 
 describe file(File.join(conf, 'graphTemplates.conf')) do
-  it { should exist }
-  its(:owner) { should eq('root') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should cmp('0644') }
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [default]
@@ -47,10 +39,6 @@ describe file(File.join(conf, 'graphTemplates.conf')) do
 end
 
 describe file(File.join(conf, 'graphite.wsgi')) do
-  it { should exist }
-  its(:owner) { should eq('root') }
-  its(:group) { should eq('hab') }
-  its(:mode) { should cmp('0755') }
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       import os, sys

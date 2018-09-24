@@ -12,6 +12,7 @@ pkg_deps=(
   core/pcre
   core/perl
   core/python2
+  socrata/inspec
 )
 # The expat, fontconfig, freetype, glib, libpng, pixman, pkg-config, xlib,
 # xproto, and zlib packages are all required to build pycairo and can be
@@ -83,6 +84,7 @@ do_install() {
   local str='if [ "$WHISPER_DIR" = "" ]\nthen\n  WHISPER_DIR="${GRAPHITE_STORAGE_DIR}/whisper"\nfi'
   sed -i "\\,^WHISPER_DIR=,s,.*,${str}," "${pkg_prefix}/bin/build-index.sh"
   rm -rf "${pkg_prefix}/conf" "${pkg_prefix}/storage"
+  cp -rp health "${pkg_prefix}/"
 }
 
 do_after() {

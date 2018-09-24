@@ -24,19 +24,6 @@ describe command('/hab/svc/carbon-cache/hooks/health_check') do
   its(:stdout) { should eq('OK: All health checks are passing') }
 end
 
-describe processes('{uwsgi} graphite-web') do
-  it { should exist }
-  its(:'entries.length') { should eq(9)
-end
-
-processes('{uwsgi} graphite-web').pids.each do |p|
-  describe file("/proc/#{p}/limits") do
-    its(:content) do
-      should match(/^Max open files\W+1024\W+1024\W+files\W+$/)
-    end
-  end
-end
-
 describe file('/hab/svc/graphite-web/hooks/run') do
   it { should exist }
   its(:owner) { should eq('root') }
@@ -64,21 +51,5 @@ describe file('/hab/svc/graphite-web/hooks/run') do
         --socket /hab/svc/graphite-web/var/uwsgi.sock
     EXP
     should eq(exp)
-  end
-end
-
-describe port(8000) do
-  it { should be_listening }
-  its(:protocols) { should eq(%w[tcp]) }
-  its(:addresses) { should eq('0.0.0.0') }
-  its(:processes) { should eq('graphite-web') }
-end
-
-%w[info.log exception.log].each do |f|
-  describe file(File.join('/hab/svc/graphite-web/var', f)) do
-    it { should exist }
-    its(:owner) { should eq('hab') }
-    its(:group) { should eq('hab') }
-    its(:mode) { should eq('0644') }
   end
 end
