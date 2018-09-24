@@ -4,9 +4,15 @@ exec 2>&1
 
 ulimit -n {{cfg.system.file_limit}}
 
+# The build-index script in pre-1.0 graphite-web uses environment variables
+# only and doesn't respect the settings in local_settings.py.
+export GRAPHITE_ROOT="{{pkg.path}}"
+export GRAPHITE_STORAGE_DIR="{{pkg.svc_data_path}}"
+export WHISPER_DIR="{{bind.carbon-cache.first.cfg.storage_dir}}/whisper"
+
 exec {{pkg.path}}/bin/uwsgi \
   --processes {{cfg.system.workers}} \
-  {{#with bind.carbon_cache.first as |carbon| ~}}
+  {{#with bind.carbon-cache.first as |carbon| ~}}
   --carbon {{carbon.sys.ip}}:{{carbon.cfg.line_port}} \
   {{/with ~}}
   --pythonpath {{pkg.svc_config_path}} \
@@ -18,9 +24,3 @@ exec {{pkg.path}}/bin/uwsgi \
   --procname graphite-web \
   --die-on-term \
   --socket :{{cfg.system.port}}
-  # TODO: Do we need these from the original runit service?
-  # --uid {{pkg.svc_user}} \
-  # --gid {{pkg.svc_group}} \
-  # --chmod-socket 755 \
-
-sleep 2

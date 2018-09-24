@@ -16,5 +16,7 @@ env:
   matrix:
     - HAB_PLAN=
     - HAB_PLAN=carbon
+    - HAB_PLAN=carbon-cache
+    - HAB_PLAN=graphite-web
 
 script: test/full.sh

@@ -1,9 +1,12 @@
-GRAPHITE_ROOT = '{{pkg.svc_path}}'
+GRAPHITE_ROOT = '{{pkg.path}}'
 CONF_DIR = '{{pkg.svc_config_path}}'
 STORAGE_DIR = '{{pkg.svc_data_path}}'
-WHISPER_DIR = '{{bind.carbon_cache.members.first.svc_data_path}}/whisper'
-RRD_DIR = '{{bind.carbon_cache.members.first.svc_data_path}}/rrd'
-CERES_DIR = '{{bind.carbon_cache.members.first.svc_data_path}}/ceres'
+CONTENT_DIR = '{{pkg.path}}/webapp/content'
+{{#with bind.carbon-cache.first as |carbon| ~}}
+WHISPER_DIR = '{{carbon.cfg.storage_dir}}/whisper'
+RRD_DIR = '{{carbon.cfg.storage_dir}}/rrd'
+CERES_DIR = '{{carbon.cfg.storage_dir}}/ceres'
+{{/with ~}}
 LOG_DIR = '{{pkg.svc_var_path}}'
 INDEX_FILE = '{{pkg.svc_data_path}}/index'
 {{#each cfg.web ~}}

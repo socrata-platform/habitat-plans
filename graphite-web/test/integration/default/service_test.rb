@@ -19,6 +19,11 @@ describe command("hab svc status #{pkg_origin}/graphite-web") do
   its(:exit_status) { should eq(0) }
 end
 
+describe command('/hab/svc/carbon-cache/hooks/health_check') do
+  its(:exit_status) { should eq(0) }
+  its(:stdout) { should eq('OK: All health checks are passing') }
+end
+
 describe processes('{uwsgi} graphite-web') do
   it { should exist }
   its(:'entries.length') { should eq(9)

@@ -4,20 +4,37 @@ pkg_description="Graphite web"
 pkg_upstream_url="https://github.com/graphite-project/graphite-web"
 pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.com>"
 pkg_license=("Apache-2.0")
+# Pre-1.0 versions of the build-index script shell out to perl for their
+# regexing.
 pkg_deps=(
   core/bash
+  core/cairo
   core/pcre
+  core/perl
   core/python2
 )
+# The expat, fontconfig, freetype, glib, libpng, pixman, pkg-config, xlib,
+# xproto, and zlib packages are all required to build pycairo and can be
+# deleted when the version switches to one that uses cffi.
 pkg_build_deps=(
+  core/expat
+  core/fontconfig
+  core/freetype
   core/gcc
+  core/glib
+  core/libpng
   core/patchelf
+  core/pixman
+  core/pkg-config
   core/virtualenv
-  "${pkg_origin}/carbon"
+  core/xlib
+  core/xproto
+  core/zlib
+  socrata/carbon
 )
 pkg_bin_dirs=(bin)
 pkg_binds=(
-  [carbon_cache]="line_port"
+  [carbon-cache]="line_port storage_dir"
 )
 pkg_exports=(
   [port]=system.port
@@ -49,16 +66,27 @@ do_build() {
 do_install() {
   pip install django==1.5.5
   pip install django-tagging==0.3.6
-  pip install pytz pyparsing python-memcached uwsgi whisper
+  pip install pycairo pyparsing python-memcached pytz uwsgi whisper
   PYTHONPATH="${pkg_prefix}/webapp" pip install --no-binary=:all: \
     --install-option="--prefix=${pkg_prefix}" \
     --install-option="--install-lib=${pkg_prefix}/webapp" \
     graphite-web=="${pkg_version}"
 
-  sed -i 's/graphite\.local_settings/local_settings/g' "${pkg_prefix}/webapp/graphite/settings.py"
-  rm -rf "${pkg_prefix}/conf"
+  # Load the local_settings.py file from the config dir, which is in our
+  # PYTHONPATH.
+  sed -i 's/graphite\.local_settings/local_settings/g' \
+    "${pkg_prefix}/webapp/graphite/settings.py"
+
+  # The pre-1.0 build-index script doesn't respect an environment variable for
+  # WHISPER_DIR if one is set.
+  # shellcheck disable=SC2016
+  local str='if [ "$WHISPER_DIR" = "" ]\nthen\n  WHISPER_DIR="${GRAPHITE_STORAGE_DIR}/whisper"\nfi'
+  sed -i "\\,^WHISPER_DIR=,s,.*,${str}," "${pkg_prefix}/bin/build-index.sh"
+  rm -rf "${pkg_prefix}/conf" "${pkg_prefix}/storage"
 }
 
 do_after() {
-  patchelf --set-rpath "$(pkg_path_for core/python2)/lib:$(pkg_path_for core/pcre)/lib" "${pkg_prefix}/bin/uwsgi"
+  patchelf --set-rpath \
+    "$(pkg_path_for core/python2)/lib:$(pkg_path_for core/pcre)/lib" \
+    "${pkg_prefix}/bin/uwsgi"
 }
