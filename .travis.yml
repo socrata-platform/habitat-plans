@@ -18,5 +18,6 @@ env:
     - HAB_PLAN=carbon
     - HAB_PLAN=carbon-cache
     - HAB_PLAN=graphite-web
+    - HAB_PLAN=inspec
 
 script: test/full.sh

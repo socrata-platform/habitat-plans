@@ -7,6 +7,9 @@ plan_path = "carbon-cache"
 [graphite-web]
 plan_path = "graphite-web"
 
+[inspec]
+plan_path = "inspec"
+
 [openssl]
 plan_path = "openssl"
 
