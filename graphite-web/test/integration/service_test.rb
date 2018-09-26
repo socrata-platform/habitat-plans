@@ -19,9 +19,8 @@ describe command("hab svc status #{pkg_origin}/graphite-web") do
   its(:exit_status) { should eq(0) }
 end
 
-describe command('/hab/svc/carbon-cache/hooks/health_check') do
+describe command('/hab/svc/graphite-web/hooks/health_check') do
   its(:exit_status) { should eq(0) }
-  its(:stdout) { should eq('OK: All health checks are passing') }
 end
 
 describe file('/hab/svc/graphite-web/hooks/run') do

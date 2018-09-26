@@ -7,7 +7,7 @@ control 'config' do
   title 'Config checks'
   desc "Config checks for #{ENV['pkg_origin']}/#{ENV['pkg_name']}"
 
-  describe file(File.join(ENV['pkg_svc_config_path'], 'local_settings.py') do
+  describe file(File.join(ENV['pkg_svc_config_path'], 'local_settings.py')) do
     it { should exist }
     its(:owner) { should eq(ENV['pkg_svc_user']) }
     its(:group) { should eq(ENV['pkg_svc_group']) }

@@ -9,9 +9,11 @@ pkg_license=("Apache-2.0")
 pkg_deps=(
   core/bash
   core/cairo
+  core/libxml2
   core/pcre
   core/perl
   core/python2
+  core/zlib
   socrata/inspec
 )
 # The expat, fontconfig, freetype, glib, libpng, pixman, pkg-config, xlib,
@@ -30,7 +32,6 @@ pkg_build_deps=(
   core/virtualenv
   core/xlib
   core/xproto
-  core/zlib
   socrata/carbon
 )
 pkg_bin_dirs=(bin)
@@ -88,7 +89,11 @@ do_install() {
 }
 
 do_after() {
-  patchelf --set-rpath \
-    "$(pkg_path_for core/python2)/lib:$(pkg_path_for core/pcre)/lib" \
-    "${pkg_prefix}/bin/uwsgi"
+  local rpath
+  rpath="$(pkg_path_for core/python2)/lib"
+  rpath+=":$(pkg_path_for core/pcre)/lib"
+  rpath+=":$(pkg_path_for core/libxml2)/lib"
+  rpath+=":$(pkg_path_for core/zlib)/lib"
+
+  patchelf --set-rpath "$rpath" "${pkg_prefix}/bin/uwsgi"
 }
