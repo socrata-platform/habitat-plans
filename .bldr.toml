@@ -10,6 +10,9 @@ plan_path = "graphite-web"
 [inspec]
 plan_path = "inspec"
 
+[nginx-graphite]
+plan_path = "nginx-graphite"
+
 [openssl]
 plan_path = "openssl"
 

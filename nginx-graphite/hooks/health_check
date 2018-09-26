@@ -1,0 +1,23 @@
+#!/bin/sh
+
+export pkg_origin="{{pkg.origin}}"
+export pkg_name="{{pkg.name}}"
+export pkg_path="{{pkg.path}}"
+export pkg_svc_path="{{pkg.svc_path}}"
+export pkg_svc_config_path="{{pkg.svc_config_path}}"
+export pkg_svc_var_path="{{pkg.svc_var_path}}"
+export pkg_svc_user="{{pkg.svc_user}}"
+export pkg_svc_group="{{pkg.svc_group}}"
+export cfg_file_limit="{{cfg.file_limit}}"
+export cfg_worker_processes="{{cfg.worker_processes}}"
+export cfg_port="{{cfg.port}}"
+
+{{pkgPathFor "socrata/inspec"}}/bin/inspec exec {{pkg.path}}/health \
+  --vendor-cache={{pkg.svc_var_path}}/inspec/cache \
+  --no-create-lockfile
+
+if [ $? != 0 ]; then
+  exit 2
+else
+  exit 0
+fi

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+exec 2>&1
+
+ulimit -n {{cfg.file_limit}}
+
+exec {{pkgPathFor "core/nginx"}}/bin/nginx \
+  -c {{pkg.svc_config_path}}/nginx.conf
