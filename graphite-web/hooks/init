@@ -1,0 +1,8 @@
+#!/bin/sh
+
+exec 2>&1
+
+PYTHONPATH="{{pkg.path}}/webapp:{{pkg.svc_config_path}}" \
+  {{pkg.path}}/bin/django-admin.py syncdb \
+  --settings=graphite.settings \
+  --noinput

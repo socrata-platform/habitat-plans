@@ -1,0 +1,26 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+  provision_command:
+    - mkdir -p /run/sshd
+  volume:
+    - <%= File.expand_path('~/.hab/cache') %>:/hab/cache
+
+provisioner:
+  name: habitat
+  install_latest_artifact: true
+
+verifier:
+  name: inspec
+  inspec_tests:
+    - <%= ENV['HAB_PLAN'] %>/test/integration
+
+platforms:
+  - name: ubuntu
+
+suites:
+  - name: <%= ENV['HAB_ORIGIN'] || raise('Environment variable HAB_ORIGIN must be set') %>-<%= ENV['HAB_PLAN'] || raise('Environment variable HAB_PLAN must be set') %>
+    provisioner:
+      package_origin: <%= ENV['HAB_ORIGIN'] %>
+      package_name: <%= ENV['HAB_PLAN'] %>

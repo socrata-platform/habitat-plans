@@ -1,0 +1,22 @@
+[system]
+file_limit = 1024
+
+[cache]
+storage_dir = "/hab/svc/carbon-cache/data"
+max_updates_per_second = 100
+max_creates_per_minute = 200
+line_receiver_port = 2003
+udp_receiver_port = 2003
+pickle_receiver_port = 2004
+enable_udp_listener = "True"
+cache_query_port = 7002
+log_updates = "False"
+log_cache_hits = "False"
+
+[storage_schemas.500_carbon]
+pattern = "^carbon\\."
+retentions = "60s:90d"
+
+[storage_schemas.999_default_1min_for_1day]
+pattern = ".*"
+retentions = "60s:1d,5m:14d,1h:365d"

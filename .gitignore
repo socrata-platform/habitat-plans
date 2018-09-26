@@ -1,2 +1,33 @@
+# Habitat
 */results/
 results/
+
+# Text Editors
+*~
+*#
+.#*
+\#*#
+.*.sw[a-z]
+*.un~
+*.sublime-project
+*.sublime-workspace
+
+# Bundler
+Gemfile.lock
+*/Gemfile.lock
+gems.locked
+bin/*
+.bundle/*
+
+# RuboCop
+.rubocop-http*
+
+# Test Kitchen
+.kitchen/
+*/.kitchen/
+.kitchen.local.yml
+*/.kitchen.local.yml
+
+# TravisCI
+.travis/*
+!.travis/configs.tar.gz.enc
