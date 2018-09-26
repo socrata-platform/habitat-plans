@@ -16,12 +16,13 @@ export cfg_cache_enable_udp_listener="{{cfg.cache.enable_udp_listener}}"
 export cfg_cache_udp_receiver_port="{{cfg.cache.udp_receiver_port}}"
 export cfg_cache_pickle_receiver_port="{{cfg.cache.pickle_receiver_port}}"
 export cfg_cache_cache_query_port="{{cfg.cache.cache_query_port}}"
+export carbon_pkg_path="{{pkgPathFor "socrata/carbon"}}"
 
 {{pkgPathFor "socrata/inspec"}}/bin/inspec exec {{pkg.path}}/health \
   --vendor-cache={{pkg.svc_var_path}}/inspec/cache \
   --no-create-lockfile
 
-if [ $? != 0 ];
+if [ $? != 0 ]; then
   exit 2
 else
   exit 0

@@ -3,8 +3,6 @@ file_limit = 1024
 
 [cache]
 storage_dir = "/hab/svc/carbon-cache/data"
-enable_logrotation = "True"
-max_cache_size = "inf"
 max_updates_per_second = 100
 max_creates_per_minute = 200
 line_receiver_port = 2003
@@ -12,11 +10,8 @@ udp_receiver_port = 2003
 pickle_receiver_port = 2004
 enable_udp_listener = "True"
 cache_query_port = 7002
-cache_write_strategy = "sorted"
-use_flow_control = "True"
 log_updates = "False"
 log_cache_hits = "False"
-whisper_autoflush = "False"
 
 [storage_schemas.500_carbon]
 pattern = "^carbon\\."

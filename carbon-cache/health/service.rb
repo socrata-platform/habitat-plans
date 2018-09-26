@@ -11,15 +11,15 @@ control 'service' do
     it { should be_listening }
     its(:protocols) { should include('tcp') }
     its(:addresses) { should eq(%w[0.0.0.0]) }
-    its(:processes) { should eq('python') }
+    its(:processes) { should eq(%w[python]) }
   end
 
   if ENV['cfg_cache_enable_udp_listener'].to_s.casecmp('true').zero?
     describe port(ENV['cfg_cache_udp_receiver_port']) do
       it { should be_listening }
       its(:protocols) { should include('udp') }
-      its(:addresses) { should eq('0.0.0.0') }
-      its(:processes) { should eq('python') }
+      its(:addresses) { should eq(%w[0.0.0.0]) }
+      its(:processes) { should eq(%w[python]) }
     end
   end
 
@@ -27,23 +27,24 @@ control 'service' do
     it { should be_listening }
     its(:protocols) { should eq(%w[tcp]) }
     its(:addresses) { should eq(%w[0.0.0.0]) }
-    its(:processes) { should eq('python') }
+    its(:processes) { should eq(%w[python]) }
   end
 
   describe port(ENV['cfg_cache_cache_query_port']) do
     it { should be_listening }
     its(:protocols) { should eq(%w[tcp]) }
     its(:addresses) { should eq(%w[0.0.0.0]) }
-    its(:processes) { should eq('python') }
+    its(:processes) { should eq(%w[python]) }
   end
 
-  describe processes("#{ENV['pkg_path']}/bin/python " \
-                   "#{ENV['pkg_path']}/bin/carbon-cache.py " \
-                   "--config=#{ENV['pkg_svc_config_path']}/carbon.conf " \
-                   '--debug start') do
-    it { should exist }
-    its(:'entries.length') { should eq(1) }
-  end
+  # TODO: Pending https://github.com/inspec/inspec/pull/3446
+  # describe processes("#{ENV['carbon_pkg_path']}/bin/python " \
+  #                  "#{ENV['carbon_pkg_path']}/bin/carbon-cache.py " \
+  #                  "--config=#{ENV['pkg_svc_config_path']}/carbon.conf " \
+  #                  '--debug start') do
+  #   it { should exist }
+  #   its(:'entries.length') { should eq(1) }
+  # end
 
   pid = file(File.join(ENV['pkg_svc_path'], 'PID')).content
 
@@ -67,13 +68,5 @@ control 'service' do
     its(:group) { should eq(ENV['pkg_svc_group']) }
     its(:mode) { should cmp('0644') }
     its(:content) { should eq(pid) }
-  end
-
-  describe file('/hab/svc/carbon-cache/var/carbon-cache.log') do
-    it { should exist }
-    its(:owner) { should eq(ENV['pkg_svc_user']) }
-    its(:group) { should eq(ENV['pkg_svc_group']) }
-    its(:mode) { should cmp('0644') }
-    its(:content) { should match(/carbon-cache stuff/) }
   end
 end

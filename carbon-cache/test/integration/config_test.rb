@@ -6,9 +6,10 @@ describe file(File.join(conf, 'carbon.conf')) do
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [cache]
-      ENABLE_LOGROTATION = True
-      USER = graphite
-      MAX_CACHE_SIZE = inf
+      LOCAL_DATA_DIR = /hab/svc/carbon-cache/data/whisper
+      WHITELISTS_DIR = /hab/svc/carbon-cache/data/lists
+      CONF_DIR = /hab/svc/carbon-cache/config
+      PID_DIR = /hab/svc/carbon-cache/var
       MAX_UPDATES_PER_SECOND = 100
       MAX_CREATES_PER_MINUTE = 200
       LINE_RECEIVER_PORT = 2003
@@ -16,12 +17,8 @@ describe file(File.join(conf, 'carbon.conf')) do
       PICKLE_RECEIVER_PORT = 2004
       ENABLE_UDP_LISTENER = True
       CACHE_QUERY_PORT = 7002
-      CACHE_WRITE_STRATEGY = sorted
-      USE_FLOW_CONTROL = True
       LOG_UPDATES = False
       LOG_CACHE_HITS = False
-      WHISPER_AUTOFLUSH = False
-      LOCAL_DATA_DIR = /data/graphite/whisper/
     EXP
     should eq(expected)
   end

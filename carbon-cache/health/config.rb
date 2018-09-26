@@ -15,7 +15,7 @@ control 'config' do
   end
 
   describe ini(File.join(ENV['pkg_svc_config_path'], 'carbon.conf')) do
-    its(:'cache.USER') { should eq(ENV['pkg_svc_user']) }
+    its(:'cache.CONF_DIR') { should eq(ENV['pkg_svc_config_path']) }
   end
 end
 
