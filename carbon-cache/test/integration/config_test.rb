@@ -31,14 +31,6 @@ describe file(File.join(conf, 'storage-schemas.conf')) do
       PATTERN = ^carbon\.
       RETENTIONS = 60s:90d
 
-      [500_core_60s_6days_15min_year]
-      PATTERN = ^core\.
-      RETENTIONS = 60s:1d,15m:7d,1h:365d
-
-      [500_metrics_default]
-      PATTERN = ^metrics\.
-      RETENTIONS = 60s:1d,15m:7d,1h:365d
-
       [999_default_1min_for_1day]
       PATTERN = .*
       RETENTIONS = 60s:1d,5m:14d,1h:365d

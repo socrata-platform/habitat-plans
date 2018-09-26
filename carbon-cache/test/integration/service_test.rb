@@ -21,7 +21,6 @@ end
 
 describe command('/hab/svc/carbon-cache/hooks/health_check') do
   its(:exit_status) { should eq(0) }
-  its(:stdout) { should eq('OK: All health checks are passing') }
 end
 
 describe file('/hab/svc/carbon-cache/hooks/run') do

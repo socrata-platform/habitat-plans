@@ -17,14 +17,6 @@ log_cache_hits = "False"
 pattern = "^carbon\\."
 retentions = "60s:90d"
 
-[storage_schemas.500_core_60s_6days_15min_year]
-pattern = "^core\\."
-retentions = "60s:1d,15m:7d,1h:365d"
-
-[storage_schemas.500_metrics_default]
-pattern = "^metrics\\."
-retentions = "60s:1d,15m:7d,1h:365d"
-
 [storage_schemas.999_default_1min_for_1day]
 pattern = ".*"
 retentions = "60s:1d,5m:14d,1h:365d"
