@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 pkg_origin = ENV['HAB_ORIGIN']
-pkg_path = command("hab pkg path #{pkg_origin}/carbon").stdout
+pkg_path = command("hab pkg path #{pkg_origin}/carbon").stdout.strip
 pip_path = File.join(pkg_path, 'bin/pip')
 
 describe directory('/opt/graphite') do
