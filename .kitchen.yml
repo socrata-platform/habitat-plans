@@ -3,6 +3,8 @@ driver:
   name: docker
   use_sudo: false
   provision_command:
+    - apt-get update
+    - apt-get -y install iproute2 net-tools
     - mkdir -p /run/sshd
   volume:
     - <%= File.expand_path('~/.hab/cache') %>:/hab/cache

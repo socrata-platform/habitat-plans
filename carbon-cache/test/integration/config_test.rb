@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'spec_helper'
+
 conf = '/hab/svc/carbon-cache/config'
 
 describe file(File.join(conf, 'carbon.conf')) do
@@ -10,15 +12,17 @@ describe file(File.join(conf, 'carbon.conf')) do
       WHITELISTS_DIR = /hab/svc/carbon-cache/data/lists
       CONF_DIR = /hab/svc/carbon-cache/config
       PID_DIR = /hab/svc/carbon-cache/var
-      MAX_UPDATES_PER_SECOND = 100
-      MAX_CREATES_PER_MINUTE = 200
-      LINE_RECEIVER_PORT = 2003
-      UDP_RECEIVER_PORT = 2003
-      PICKLE_RECEIVER_PORT = 2004
-      ENABLE_UDP_LISTENER = True
       CACHE_QUERY_PORT = 7002
-      LOG_UPDATES = False
+      ENABLE_UDP_LISTENER = True
+      LINE_RECEIVER_PORT = 2003
       LOG_CACHE_HITS = False
+      LOG_UPDATES = False
+      MAX_CREATES_PER_MINUTE = 200
+      MAX_UPDATES_PER_SECOND = 100
+      PICKLE_RECEIVER_PORT = 2004
+      STORAGE_DIR = /hab/svc/carbon-cache/data
+      UDP_RECEIVER_PORT = 2003
+
     EXP
     should eq(expected)
   end
@@ -28,12 +32,13 @@ describe file(File.join(conf, 'storage-schemas.conf')) do
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [500_carbon]
-      PATTERN = ^carbon\.
+      PATTERN = ^carbon\\.
       RETENTIONS = 60s:90d
-
       [999_default_1min_for_1day]
       PATTERN = .*
       RETENTIONS = 60s:1d,5m:14d,1h:365d
-    end
+
+    EXP
+    should eq(expected)
   end
 end

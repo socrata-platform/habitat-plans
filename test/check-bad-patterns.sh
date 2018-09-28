@@ -48,8 +48,9 @@ file_check() {
       continue
     fi
 
-    # It's OK to block in the run hook, but nowhere else.
-    if [[ ${1##*/} != "run" && $line == *"sleep"* ]]; then
+    # It's OK to block in the run hook and bad-but-sometimes-necessary in
+    # post-run, but nowhere else.
+    if [[ ${1##*/} != "run" && ${1##*/} != "post-run" && $line == *"sleep"* ]]; then
       sleeps=$((sleeps + 1))
       continue
     fi
