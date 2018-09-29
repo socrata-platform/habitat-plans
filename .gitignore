@@ -28,6 +28,9 @@ bin/*
 .kitchen.local.yml
 */.kitchen.local.yml
 
+# Berkshelf
+Berksfile.lock
+
 # TravisCI
 .travis/*
 !.travis/configs.tar.gz.enc

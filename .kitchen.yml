@@ -1,17 +1,16 @@
 ---
 driver:
-  name: docker
-  use_sudo: false
-  provision_command:
-    - apt-get update
-    - apt-get -y install iproute2 net-tools
-    - mkdir -p /run/sshd
-  volume:
+  name: dokken
+  privileged: true
+  volumes:
     - <%= File.expand_path('~/.hab/cache') %>:/hab/cache
+    - <%= File.expand_path(__dir__) %>:/tmp/habitat-plans
+
+transport:
+  name: dokken
 
 provisioner:
-  name: habitat
-  install_latest_artifact: true
+  name: dokken
 
 verifier:
   name: inspec
@@ -20,9 +19,20 @@ verifier:
 
 platforms:
   - name: ubuntu
+    driver:
+      intermediate_instructions:
+        - RUN apt-get update
+        - RUN apt-get -y install systemd iproute2
+      pid_one_command: /lib/systemd/systemd
 
 suites:
   - name: <%= ENV['HAB_ORIGIN'] || raise('Environment variable HAB_ORIGIN must be set') %>-<%= ENV['HAB_PLAN'] || raise('Environment variable HAB_PLAN must be set') %>
     provisioner:
       package_origin: <%= ENV['HAB_ORIGIN'] %>
       package_name: <%= ENV['HAB_PLAN'] %>
+    run_list:
+      - recipe[plan_test]
+    attributes:
+      hab:
+        origin: <%= ENV['HAB_ORIGIN'] %>
+        plan: <%= ENV['HAB_PLAN'] %>
