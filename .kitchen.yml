@@ -31,7 +31,7 @@ suites:
       package_origin: <%= ENV['HAB_ORIGIN'] %>
       package_name: <%= ENV['HAB_PLAN'] %>
     run_list:
-      - recipe[plan_test]
+      - recipe[<%= ENV['HAB_PLAN'].gsub('-', '_') %>_test]
     attributes:
       hab:
         origin: <%= ENV['HAB_ORIGIN'] %>

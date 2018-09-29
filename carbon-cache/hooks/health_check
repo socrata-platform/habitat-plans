@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export HOME="{{pkg.svc_var_path}}"
 export pkg_origin="{{pkg.origin}}"
 export pkg_name="{{pkg.name}}"
 export pkg_path="{{pkg.path}}"
