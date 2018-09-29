@@ -44,6 +44,7 @@ export SSL_CERT_FILE=$(pkg_path_for cacerts)/ssl/cert.pem
 set -e
 export GEM_HOME="$GEM_HOME"
 export GEM_PATH="$GEM_PATH"
+export INSPEC_CONFIG_DIR="$pkg_svc_data_path"
 exec $(pkg_path_for core/ruby)/bin/ruby $real_bin \$@
 EOF
   chmod -v 755 "$bin"
