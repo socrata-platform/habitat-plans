@@ -1,48 +1,62 @@
 # frozen_string_literal: true
 
-conf = '/hab/svc/graphite-web/config'
+pkg_origin = ENV['HAB_ORIGIN']
+pkg_path = command("hab pkg path #{pkg_origin}/graphite-web").stdout.strip
+pkg_svc_config_path = '/hab/svc/graphite-web/config'
+pkg_svc_data_path = '/hab/svc/graphite-web/data'
+pkg_svc_var_path = '/hab/svc/graphite-web/var'
 
-describe file(File.join(conf, 'local_settings.py')) do
-  its(:content) do
-    expected = <<-EXP.gsub(/^ +/, '')
-      SECRET_KEY = 'TODO_how_much_do_we_need_this'
-      TIME_ZONE = 'UTC'
-      CONF_DIR = '/opt/graphite/conf'
-      STORAGE_DIR = '/data/graphite'
-      DATABASES = {'default': {'NAME': '/data/graphite/graphite.db', 'ENGINE': 'django.db.backends.sqlite3'}}
+expected_ls = <<-EXP.gsub(/^ {2}/, '')
+  GRAPHITE_ROOT = '#{pkg_path}'
+  CONF_DIR = '#{pkg_svc_config_path}'
+  STORAGE_DIR = '#{pkg_svc_data_path}'
+  CONTENT_DIR = '#{pkg_path}/webapp/content'
+  WHISPER_DIR = '/hab/svc/carbon-cache/data/whisper'
+  RRD_DIR = '/hab/svc/carbon-cache/data/rrd'
+  CERES_DIR = '/hab/svc/carbon-cache/data/ceres'
+  LOG_DIR = '#{pkg_svc_var_path}'
+  INDEX_FILE = '#{pkg_svc_data_path}/index'
+  SECRET_KEY = 'UNSAFE_DEFAULT'
+  TIME_ZONE = 'UTC'
+  DATABASES = {
 
-      try:
-        from graphite.local_settings_dynamic import *
-      except ImportError:
-        pass
-    EXP
-    should eq(expected)
-  end
+    'default': { 'ENGINE': 'django.db.backends.sqlite3', 'NAME': '/hab/svc/graphite-web/data/graphite.db', },
+  }
+
+  try:
+    from graphite.local_settings_dynamic import *
+  except ImportError:
+    pass
+EXP
+
+describe file(File.join(pkg_svc_config_path, 'local_settings.py')) do
+  its(:content) { should eq(expected_ls) }
 end
 
-describe file(File.join(conf, 'graphTemplates.conf')) do
+describe file(File.join(pkg_svc_config_path, 'graphTemplates.conf')) do
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [default]
       background = black
-      foreground = white
-      majorLine = white
-      minorLine = grey
-      lineColors = blue,green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose
-      fontName = Sans
-      fontSize = 10
       fontBold = False
       fontItalic = False
+      fontName = Sans
+      fontSize = 10
+      foreground = white
+      lineColors = blue,green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose
+      majorLine = white
+      minorLine = grey
+
     EXP
     should eq(expected)
   end
 end
 
-describe file(File.join(conf, 'graphite.wsgi')) do
+describe file(File.join(pkg_svc_config_path, 'graphite.wsgi')) do
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       import os, sys
-      sys.path.append('/opt/graphite/webapp')
+      sys.path.append('#{pkg_path}/webapp')
       os.environ['DJANGO_SETTINGS_MODULE'] = 'graphite.settings'
 
       import django.core.handlers.wsgi

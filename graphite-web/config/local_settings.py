@@ -14,12 +14,8 @@ INDEX_FILE = '{{pkg.svc_data_path}}/index'
 {{/each ~}}
 
 DATABASES = {
-{{#each cfg.databases ~}}
-  '{{@key}}': {
-    {{#each this ~}}
-    '{{toUppercase @key}}': '{{this}}',
-    {{/each ~}}
-  },
+{{#each cfg.databases }}
+  '{{@key}}': { {{#each this }}'{{toUppercase @key}}': '{{this}}', {{/each }}},
 {{/each ~}}
 }
 
