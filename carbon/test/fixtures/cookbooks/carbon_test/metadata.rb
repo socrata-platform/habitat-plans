@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-name 'plan_test'
+name 'carbon_test'
 maintainer 'Tyler Technologies, Data & Insights Division'
 maintainer_email 'sysadmin@socrata.com'
 license 'Apache-2.0'

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'spec_helper'
-
 pkg_origin = ENV['HAB_ORIGIN']
 pkg_path = command("hab pkg path #{pkg_origin}/carbon-cache").stdout.strip
 carbon_pkg_path = command("hab pkg path socrata/carbon").stdout.strip

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'spec_helper'
-
 conf = '/hab/svc/carbon-cache/config'
 
 describe file(File.join(conf, 'carbon.conf')) do
