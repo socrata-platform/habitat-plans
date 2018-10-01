@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-conf = '/hab/svc/carbon-cache/config'
+pkg_svc_config_path = '/hab/svc/carbon-cache/config'
 
-describe file(File.join(conf, 'carbon.conf')) do
+describe file(File.join(pkg_svc_config_path, 'carbon.conf')) do
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [cache]
@@ -26,7 +26,7 @@ describe file(File.join(conf, 'carbon.conf')) do
   end
 end
 
-describe file(File.join(conf, 'storage-schemas.conf')) do
+describe file(File.join(pkg_svc_config_path, 'storage-schemas.conf')) do
   its(:content) do
     expected = <<-EXP.gsub(/^ +/, '')
       [500_carbon]
