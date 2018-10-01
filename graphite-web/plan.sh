@@ -47,7 +47,7 @@ pkg_exposes=(
 
 # The graphite-web version matches up to the Carbon version.
 pkg_version() {
-  < "$(pkg_path_for "${pkg_origin}/carbon")/IDENT" cut -d '/' -f 3
+  < "$(pkg_path_for socrata/carbon)/IDENT" cut -d '/' -f 3
 }
 
 do_before() {

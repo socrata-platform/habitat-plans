@@ -1,20 +1,14 @@
 [carbon]
 plan_path = "carbon"
-
 [carbon-cache]
 plan_path = "carbon-cache"
-
 [graphite-web]
 plan_path = "graphite-web"
-
 [inspec]
 plan_path = "inspec"
-
 [nginx-graphite]
 plan_path = "nginx-graphite"
-
 [openssl]
 plan_path = "openssl"
-
 [openssl-fips]
 plan_path = "openssl-fips"
