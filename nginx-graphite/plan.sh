@@ -6,7 +6,7 @@ pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.c
 pkg_license=("BSD-2-Clause")
 pkg_deps=(
   core/nginx
-  "${pkg_origin}/graphite-web"
+  socrata/graphite-web
 )
 pkg_binds=(
   [graphite-web]="port"

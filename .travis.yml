@@ -19,5 +19,6 @@ env:
     - HAB_PLAN=carbon-cache
     - HAB_PLAN=graphite-web
     - HAB_PLAN=inspec
+    - HAB_PLAN=nginx-graphite
 
 script: test/full.sh
