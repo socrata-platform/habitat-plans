@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 pkg_origin = ENV['HAB_ORIGIN']
-pkg_path = command("hab pkg path #{pkg_origin}/carbon-cache").stdout.strip
-carbon_pkg_path = command("hab pkg path socrata/carbon").stdout.strip
-svc_pid = file('/hab/svc/carbon-cache/PID').content
+carbon_pkg_path = command('hab pkg path socrata/carbon').stdout.strip
 
 describe command('hab sup status') do
   its(:exit_status) { should eq(0) }

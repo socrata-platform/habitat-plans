@@ -24,10 +24,12 @@ execute "Build #{origin}/#{plan}" do
 end
 
 execute "Install #{origin}/#{plan}" do
-  command lazy {
-    file = File.read('/tmp/habitat-plans/results/last_build.env')
-           .match(/^pkg_artifact=(.*)$/)[1]
-    "hab pkg install /tmp/habitat-plans/results/#{file}"
-  }
+  command(
+    lazy do
+      file = File.read('/tmp/habitat-plans/results/last_build.env')
+                 .match(/^pkg_artifact=(.*)$/)[1]
+      "hab pkg install /tmp/habitat-plans/results/#{file}"
+    end
+  )
   live_stream true
 end
