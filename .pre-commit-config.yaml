@@ -29,3 +29,8 @@
       entry: ./test/check-bad-patterns.sh
       language: system
       files: hooks/*
+    - id: check-ruby-style
+      name: Lint any Ruby files with RuboCop
+      entry: ./test/check-ruby-style.sh
+      language: system
+      types: [ruby]
