@@ -53,6 +53,21 @@ install_shellcheck () {
   fi
 }
 
+install_chefdk() {
+  # Ensure Chef-DK is installed.
+  if ! command -v chef > /dev/null; then
+    echo "[INFO] Chef-DK not found; installing..."
+    if command -v brew > /dev/null; then
+      echo -n "    [INFO] Installing Chef-DK via Homebrew..."
+      brew tap chef/chef > /dev/null
+      brew cask install chefdk > /dev/null && echo " OK"
+    else
+      echo -n "    [INFO] Installing Chef-DK via curl..."
+      curl -s https://omnitruck.chef.io/install.sh | sudo bash -s -- -c current -P chefdk > /dev/null
+    fi
+  fi
+}
+
 run_pre_commit () {
   echo "[INFO] Installing Pre-Commit locally..."
   pre-commit install
@@ -64,6 +79,7 @@ run_pre_commit () {
 main() {
   install_pre_commit
   install_shellcheck
+  install_chefdk
 
   run_pre_commit
 }
