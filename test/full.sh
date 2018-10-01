@@ -15,6 +15,7 @@ install_chefdk() {
       curl -s https://omnitruck.chef.io/install.sh | sudo bash -s -- -c current -P chefdk > /dev/null
     fi
   fi
+  chef exec bundle install > /dev/null
 }
 
 run_kitchen () {
