@@ -14,14 +14,13 @@ control 'service' do
     its(:processes) { should eq(%w[nginx]) }
   end
 
-  # TODO: Pending https://github.com/inspec/inspec/pull/3446
-  # master_proc = "nginx: master process #{ENV['pkg_path']}/bin/nginx " \
-  #               "-c #{ENV['pkg_svc_config_path']}/nginx.conf"
-  #
-  # describe processes(main_proc) do
-  #   it { should exist }
-  #   its(:'entries.length') { should eq(1) }
-  # end
+  master_proc = "nginx: master process #{ENV['pkg_path']}/bin/nginx " \
+                "-c #{ENV['pkg_svc_config_path']}/nginx.conf"
+
+  describe processes(master_proc) do
+    it { should exist }
+    its(:'entries.length') { should eq(1) }
+  end
 
   master_pid = file(File.join(ENV['pkg_svc_path'], 'PID')).content
 
@@ -32,22 +31,21 @@ control 'service' do
     end
   end
 
-  # TODO: Pending https://github.com/inspec/inspec/pull/3446
-  # worker_procs = 'nginx: worker process'
-  #
-  # describe processes(worker_procs) do
-  #   it { should exist }
-  #   its(:'entries.length') { should eq(ENV['cfg_worker_processes'].to_i) }
-  # end
-  #
-  # processes(worker_procs).pids.each do |p|
-  #   describe file("/proc/#{p}/limits") do
-  #     its(:content) do
-  #       limit = ENV['cfg_file_limit']
-  #       should match(/^Max open files\W+#{limit}\W+#{limit}\W+files\W+$/)
-  #     end
-  #   end
-  # end
+  worker_procs = 'nginx: worker process'
+
+  describe processes(worker_procs) do
+    it { should exist }
+    its(:'entries.length') { should eq(ENV['cfg_worker_processes'].to_i) }
+  end
+
+  processes(worker_procs).pids.each do |p|
+    describe file("/proc/#{p}/limits") do
+      its(:content) do
+        limit = ENV['cfg_file_limit']
+        should match(/^Max open files\W+#{limit}\W+#{limit}\W+files\W+$/)
+      end
+    end
+  end
 
   %w[access.log error.log http-error.log].each do |f|
     describe file(File.join(ENV['pkg_svc_var_path'], f)) do

@@ -35,3 +35,9 @@ do_build() {
 do_install() {
   cp -rp health "${pkg_prefix}/"
 }
+
+do_after() {
+  for f in uwsgi_params mime.types; do
+    cp "$(pkg_path_for core/nginx)/config/${f}" "${pkg_prefix}/config/${f}"
+  done
+}
