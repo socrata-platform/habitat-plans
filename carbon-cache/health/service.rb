@@ -37,14 +37,13 @@ control 'service' do
     its(:processes) { should eq(%w[python]) }
   end
 
-  # TODO: Pending https://github.com/inspec/inspec/pull/3446
-  # describe processes("#{ENV['carbon_pkg_path']}/bin/python " \
-  #                  "#{ENV['carbon_pkg_path']}/bin/carbon-cache.py " \
-  #                  "--config=#{ENV['pkg_svc_config_path']}/carbon.conf " \
-  #                  '--debug start') do
-  #   it { should exist }
-  #   its(:'entries.length') { should eq(1) }
-  # end
+  describe processes("#{ENV['carbon_pkg_path']}/bin/python " \
+                   "#{ENV['carbon_pkg_path']}/bin/carbon-cache.py " \
+                   "--config=#{ENV['pkg_svc_config_path']}/carbon.conf " \
+                   '--debug start') do
+    it { should exist }
+    its(:'entries.length') { should eq(1) }
+  end
 
   pid = file(File.join(ENV['pkg_svc_path'], 'PID')).content
 

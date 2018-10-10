@@ -1,8 +1,8 @@
 #!/bin/sh
 
-ulimit -n {{cfg.system.file_limit}}
-
 exec 2>&1
+
+ulimit -n {{cfg.system.file_limit}}
 
 exec {{pkgPathFor "socrata/carbon"}}/bin/python \
   {{pkgPathFor "socrata/carbon"}}/bin/carbon-cache.py \
