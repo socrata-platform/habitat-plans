@@ -30,9 +30,9 @@ describe file('/hab/svc/carbon-cache/hooks/run') do
     exp = <<-EXP.gsub(/^ {6}/, '')
       #!/bin/sh
 
-      ulimit -n 1024
-
       exec 2>&1
+
+      ulimit -n 1024
 
       exec #{carbon_pkg_path}/bin/python \\
         #{carbon_pkg_path}/bin/carbon-cache.py \\
