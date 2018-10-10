@@ -7,19 +7,19 @@ control 'service' do
   title 'Service checks'
   desc "Service checks for #{ENV['pkg_origin']}/#{ENV['pkg_name']}"
 
-  # TODO: Pending https://github.com/inspec/inspec/pull/3446
-  # describe processes('{uwsgi} graphite-web') do
-  #   it { should exist }
-  #   its(:'entries.length') { should eq(ENV['cfg_system_workers'].to_i + 1) }
-  # end
-  #
-  # processes('{uwsgi} graphite-web').pids.each do |p|
-  #   describe file("/proc/#{p}/limits") do
-  #     its(:content) do
-  #       limit = ENV['cfg_system_file_limit']
-  #       should match(/^Max open files\W+#{limit}\W+#{limit}\W+files\W+$/)
-  #   end
-  # end
+  describe processes('{uwsgi} graphite-web') do
+    it { should exist }
+    its(:'entries.length') { should eq(ENV['cfg_system_workers'].to_i + 1) }
+  end
+
+  processes('{uwsgi} graphite-web').pids.each do |p|
+    describe file("/proc/#{p}/limits") do
+      its(:content) do
+        limit = ENV['cfg_system_file_limit']
+        should match(/^Max open files\W+#{limit}\W+#{limit}\W+files\W+$/)
+      end
+    end
+  end
 
   describe port(ENV['cfg_system_port']) do
     it { should be_listening }
