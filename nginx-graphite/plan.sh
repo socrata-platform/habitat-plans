@@ -9,10 +9,10 @@ pkg_deps=(
   socrata/graphite-web
 )
 pkg_binds=(
-  [graphite-web]="port"
+  [graphite-web]=port
 )
 pkg_exports=(
-  [port]=port
+  [port]=master.port
 )
 pkg_exposes=(
   port

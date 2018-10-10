@@ -7,14 +7,14 @@ control 'service' do
   title 'Service checks'
   desc "Service checks for #{ENV['pkg_origin']}/#{ENV['pkg_name']}"
 
-  describe port(ENV['cfg_port']) do
+  describe port(ENV['cfg_master_port']) do
     it { should be_listening }
     its(:protocols) { should eq(%w[tcp]) }
     its(:addresses) { should eq(%w[0.0.0.0]) }
     its(:processes) { should eq(%w[nginx]) }
   end
 
-  master_proc = "nginx: master process #{ENV['pkg_path']}/bin/nginx " \
+  master_proc = "nginx: master process #{ENV['nginx_pkg_path']}/bin/nginx " \
                 "-c #{ENV['pkg_svc_config_path']}/nginx.conf"
 
   describe processes(master_proc) do
@@ -26,7 +26,7 @@ control 'service' do
 
   describe file("/proc/#{master_pid}/limits") do
     its(:content) do
-      limit = ENV['cfg_file_limit']
+      limit = ENV['cfg_master_file_limit']
       should match(/^Max open files\W+#{limit}\W+#{limit}\W+files\W+$/)
     end
   end
@@ -35,13 +35,13 @@ control 'service' do
 
   describe processes(worker_procs) do
     it { should exist }
-    its(:'entries.length') { should eq(ENV['cfg_worker_processes'].to_i) }
+    its(:'entries.length') { should eq(ENV['cfg_workers_processes'].to_i) }
   end
 
   processes(worker_procs).pids.each do |p|
     describe file("/proc/#{p}/limits") do
       its(:content) do
-        limit = ENV['cfg_file_limit']
+        limit = ENV['cfg_workers_file_limit']
         should match(/^Max open files\W+#{limit}\W+#{limit}\W+files\W+$/)
       end
     end

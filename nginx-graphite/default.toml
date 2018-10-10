@@ -1,3 +1,8 @@
-file_limit = 10000
-worker_processes = 1
+[master]
 port = 8080
+file_limit = 10000
+
+[workers]
+file_limit = 4096
+processes = 1
+connections = 4096

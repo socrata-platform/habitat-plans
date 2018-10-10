@@ -9,9 +9,12 @@ export pkg_svc_config_path="{{pkg.svc_config_path}}"
 export pkg_svc_var_path="{{pkg.svc_var_path}}"
 export pkg_svc_user="{{pkg.svc_user}}"
 export pkg_svc_group="{{pkg.svc_group}}"
-export cfg_file_limit="{{cfg.file_limit}}"
-export cfg_worker_processes="{{cfg.worker_processes}}"
-export cfg_port="{{cfg.port}}"
+export cfg_master_port="{{cfg.master.port}}"
+export cfg_master_file_limit="{{cfg.master.file_limit}}"
+export cfg_workers_file_limit="{{cfg.workers.file_limit}}"
+export cfg_workers_processes="{{cfg.workers.processes}}"
+export cfg_workers_connections="{{cfg.workers.connections
+export nginx_pkg_path="{{pkgPathFor "core/nginx"}}"
 
 {{pkgPathFor "socrata/inspec"}}/bin/inspec exec {{pkg.path}}/health \
   --vendor-cache={{pkg.svc_var_path}}/inspec/cache \
