@@ -17,4 +17,4 @@ hab svc load socrata/nginx-graphite --bind graphite-web:graphite-web.default
 
 Note that the service requires access to graphite-web's Django media and content files, so both services must be run under the same Habitat supervisor or with a graphite-web container's directories mounted as read-only Docker volumes.
 
-The open file limit, number of worker processes, and listening port are all configurable.
+The master process listening port and open file limit can be configured under the `[master]` table. The worker count, file limit, and connection limit are under the `[workers]` table.

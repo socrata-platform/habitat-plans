@@ -6,13 +6,13 @@ pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.c
 pkg_license=("BSD-2-Clause")
 pkg_deps=(
   core/nginx
-  "${pkg_origin}/graphite-web"
+  socrata/graphite-web
 )
 pkg_binds=(
-  [graphite-web]="port"
+  [graphite-web]=port
 )
 pkg_exports=(
-  [port]=port
+  [port]=master.port
 )
 pkg_exposes=(
   port
@@ -34,4 +34,10 @@ do_build() {
 
 do_install() {
   cp -rp health "${pkg_prefix}/"
+}
+
+do_after() {
+  for f in uwsgi_params mime.types; do
+    cp "$(pkg_path_for core/nginx)/config/${f}" "${pkg_prefix}/config/${f}"
+  done
 }
