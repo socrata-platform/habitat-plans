@@ -3,6 +3,7 @@
 pkg_svc_config_path = '/hab/svc/nginx-graphite/config'
 graphite_web_pkg_path = command('hab pkg path socrata/graphite-web').stdout
                                                                     .strip
+ip_addr = file('/etc/hosts').content.lines.last.split.first
 
 expected_conf = <<-EXP.gsub(/^ {2}/, '')
   daemon off;
@@ -61,7 +62,7 @@ expected_conf = <<-EXP.gsub(/^ {2}/, '')
 
     upstream django {
       ip_hash;
-      server unix:/tmp/uwsgi.sock;
+      server #{ip_addr}:8000;
     }
 
     server {
