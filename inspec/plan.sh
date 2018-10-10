@@ -1,6 +1,6 @@
 pkg_name=inspec
 pkg_origin="${HAB_ORIGIN:-socrata}"
-pkg_version="2.2.112"
+pkg_version="2.3.10"
 pkg_description="A minimal Chef Inspec"
 pkg_upstream_url="https://inspec.io"
 pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.com>"
@@ -9,17 +9,20 @@ pkg_deps=(
   core/busybox-static
   core/cacerts
   core/coreutils
-  core/iproute2
   core/libxml2
   core/libxslt
   core/net-tools
   core/ruby
 )
 pkg_build_deps=(
-  core/gcc
-  core/make
+  chef/inspec
 )
 pkg_bin_dirs=(bin)
+
+# Use the same package version as chef/inspec.
+pkg_version() {
+  < "$(pkg_path_for chef/inspec)/IDENT" cut -d '/' -f 3
+}
 
 do_prepare() {
   export GEM_HOME="$pkg_prefix/lib"
@@ -31,9 +34,7 @@ do_build() {
 }
 
 do_install() {
-  pushd "${HAB_CACHE_SRC_PATH}/${pkg_dirname}/" || exit 1
-  gem install inspec -v "$pkg_version" --no-document
-  popd || exit 1
+  cp -a "$(pkg_path_for chef/inspec)/lib" "${pkg_prefix}/lib"
 
   # Need to wrap the InSpec binary to ensure GEM_HOME/GEM_PATH is correct.
   local bin="$pkg_prefix/bin/$pkg_name"
