@@ -1,6 +1,5 @@
 pkg_name=inspec
 pkg_origin="${HAB_ORIGIN:-socrata}"
-pkg_version="2.3.10"
 pkg_description="A minimal Chef Inspec"
 pkg_upstream_url="https://inspec.io"
 pkg_maintainer="Tyler Technologies, Data & Insights Division <sysadmin@socrata.com>"
@@ -22,6 +21,11 @@ pkg_bin_dirs=(bin)
 # Use the same package version as chef/inspec.
 pkg_version() {
   < "$(pkg_path_for chef/inspec)/IDENT" cut -d '/' -f 3
+}
+
+do_before() {
+  do_default_before
+  update_pkg_version
 }
 
 do_prepare() {
