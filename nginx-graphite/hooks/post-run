@@ -1,7 +1,7 @@
 #!/bin/sh
 
 for n in $(seq 1 10); do
-  {{pkg.svc_path}}/hooks/health_check > /dev/null
+  {{pkg.svc_path}}/hooks/health-check > /dev/null
   [ $? = 0 ] && exit 0
   echo "Waiting for service to come up..."
   sleep 1

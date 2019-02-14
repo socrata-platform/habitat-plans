@@ -38,7 +38,7 @@ do_install() {
 }
 ```
 
-In your `health_check` hook, set any environment variables needed and run Inspec, making sure that Inspec won't try to write any files to its root-owned package directory.
+In your `health-check` hook, set any environment variables needed and run Inspec, making sure that Inspec won't try to write any files to its root-owned package directory.
 
 ```shell
 #!/bin/sh
